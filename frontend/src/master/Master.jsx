@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react'
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from './containers/LoginPage';
 import FloatingShape from './components/FloatingShape';
 import SignUpPage from './containers/SignUpPage';
@@ -51,6 +51,7 @@ const Home = () => {
     return (
         <Routes>
             <Route path="/" element={<DashboardPage />} />
+            <Route path='*' element={<Navigate to='/' replace />} />
         </Routes>
     );
 };
