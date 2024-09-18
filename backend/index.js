@@ -19,7 +19,7 @@ app.use(express.json()); // allows us to parse incoming requests:req.body
 
 app.use("/api/auth", authRoutes);
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
   app.get("*", (req, res) => {
