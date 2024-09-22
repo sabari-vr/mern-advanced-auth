@@ -47,7 +47,11 @@ export const useAuth = () => {
       }
     },
     onError: (e) => {
-      errorMessage(e.response.data.message);
+      if (e?.response?.status === 403) {
+        navigate("/verify-email");
+      } else {
+        errorMessage(e.response.data.message);
+      }
     },
   });
 
@@ -108,7 +112,7 @@ export const useAuth = () => {
     mutationFn: logout,
     onSuccess: (data) => {
       successMessage(data.message);
-      clearHistoryAndRedirect("/login");
+      clearHistoryAndRedirect("/");
       removeCookie("_user_data");
     },
     onError: (e) => {

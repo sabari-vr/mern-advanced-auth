@@ -6,16 +6,36 @@ const userSchema = new Schema(
   {
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters long"],
     },
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is required"],
+    },
+    cartItems: [
+      {
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+      },
+    ],
+    role: {
+      type: String,
+      enum: ["customer", "admin"],
+      default: "customer",
     },
     lastLogin: {
       type: Date,

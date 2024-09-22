@@ -47,8 +47,11 @@ export const signup = async (req, res) => {
       success: true,
       message: "User created successfully",
       user: {
-        ...user._doc,
-        password: undefined,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        lastLogin: user.lastLogin,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
@@ -82,6 +85,7 @@ export const verifyEmail = async (req, res) => {
     const payload = {
       user: {
         id: user.id,
+        role: user.role,
       },
     };
 
@@ -109,8 +113,11 @@ export const verifyEmail = async (req, res) => {
       accessToken,
       refreshToken,
       user: {
-        ...user._doc,
-        password: undefined,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        lastLogin: user.lastLogin,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
@@ -135,6 +142,23 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Invalid credentials" });
     }
 
+    if (!user.isVerified) {
+      const verificationToken = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+      user.verificationToken = verificationToken;
+      user.verificationTokenExpiresAt = Date.now() + 10 * 60 * 1000;
+      await user.save();
+
+      await sendVerificationEmail(user.email, verificationToken);
+
+      return res.status(403).json({
+        success: false,
+        message: "Account not verified. Verification token has been resent.",
+        verificationToken,
+      });
+    }
+
     const activeTokens = await Token.find({ userId: user.id }).sort({
       createdAt: 1,
     });
@@ -146,6 +170,7 @@ export const login = async (req, res) => {
     const payload = {
       user: {
         id: user.id,
+        role: user.role,
       },
     };
 
@@ -168,8 +193,11 @@ export const login = async (req, res) => {
       accessToken,
       refreshToken,
       user: {
-        ...user._doc,
-        password: undefined,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        lastLogin: user.lastLogin,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {

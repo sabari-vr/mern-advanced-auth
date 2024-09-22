@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Token } from "../models/user.model.js";
 
-export const auth = async (req, res, next) => {
+export const protectRoute = async (req, res, next) => {
   const authHeader = req.header("Authorization");
 
   if (!authHeader) {
@@ -18,6 +18,7 @@ export const auth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const activeTokens = await Token.find({ userId: decoded.user.id });
+
     const tokenExists = activeTokens.some((t) => t.token === token);
 
     if (!tokenExists) {
@@ -34,5 +35,13 @@ export const auth = async (req, res, next) => {
     next();
   } catch (err) {
     res.status(401).json({ msg: "Token is not valid" });
+  }
+};
+
+export const adminRoute = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    return res.status(403).json({ message: "Access denied - Admin only" });
   }
 };

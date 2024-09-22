@@ -28,7 +28,6 @@ Axios.interceptors.request.use(
 
     if (localUser?.accessToken) {
       config.headers["Authorization"] = "Bearer " + localUser.accessToken;
-      config.headers["Current-Role"] = localUser.currentRole?.roleId;
     } else {
       config.headers["Authorization"] = null;
     }
@@ -95,7 +94,6 @@ const refreshToken = async () => {
     if (!response || !response.accessToken || !response.refreshToken) {
       sessionTimeOutEvent();
     }
-    console.log(response);
     const updatedData = {
       ...localUser,
       refreshToken: response?.refreshToken,

@@ -16,7 +16,7 @@ export const verifyEmail = async (code) => {
 };
 
 export const getRefreshToken = async (payload) => {
-  const res = await Axios.post(`/v2/accounts/token/refresh`, payload);
+  const res = await Axios.post(`/auth/refresh-token`, payload);
   return res.data;
 };
 
