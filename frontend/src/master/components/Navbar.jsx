@@ -18,13 +18,6 @@ const Navbar = () => {
                     </Link>
 
                     <nav className='flex flex-wrap items-center gap-4'>
-                        <Link
-                            to={"/"}
-                            className='text-gray-300 hover:text-emerald-400 transition duration-300
-					 ease-in-out'
-                        >
-                            Home
-                        </Link>
                         {user && (
                             <Link
                                 to={"/cart"}
@@ -67,7 +60,7 @@ const Navbar = () => {
                             <>
                                 <Link
                                     to={"/signup"}
-                                    className='bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 
+                                    className='bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-2 sm:px-4 
 									rounded-md flex items-center transition duration-300 ease-in-out'
                                 >
                                     <UserPlus className='mr-2' size={18} />
@@ -79,7 +72,6 @@ const Navbar = () => {
 									rounded-md flex items-center transition duration-300 ease-in-out'
                                 >
                                     <LogIn className='mr-2' size={18} />
-                                    Login
                                 </Link>
                             </>
                         )}

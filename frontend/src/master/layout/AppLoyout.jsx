@@ -11,7 +11,7 @@ const AppLoyout = ({ children }) => {
                 </div>
             </div>
 
-            <div className='relative z-50 pt-20 flex items-center justify-center'>
+            <div className='relative z-50 pt-20'>
                 {children}
                 {/* <div className='absolute bottom-5 text-white w-full text-center'>Made with 💖 by <a target='blank' href='https://sabari-vr.github.io/my-portfolio' className='font-bold'>Sabari V R</a></div> */}
             </div>
