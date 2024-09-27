@@ -9,7 +9,7 @@ export const useCart = () => {
   const addToCartMutation = useMutation({
     mutationFn: addToCart,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["GET_CART"]);
+      queryClient.invalidateQueries({ queryKey: ["GET_CART"] });
       successMessage(data.message);
     },
     onError: (e) => {
@@ -20,7 +20,7 @@ export const useCart = () => {
   const updateQuantityCartMutation = useMutation({
     mutationFn: updateQnty,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["GET_CART"]);
+      queryClient.invalidateQueries({ queryKey: ["GET_CART"] });
       successMessage(data.message);
     },
     onError: (e) => {
@@ -31,7 +31,7 @@ export const useCart = () => {
   const removeAllFromCartMutation = useMutation({
     mutationFn: removeAllFromCart,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["GET_CART"]);
+      queryClient.invalidateQueries({ queryKey: ["GET_CART"] });
       successMessage(data.message);
     },
     onError: (e) => {
