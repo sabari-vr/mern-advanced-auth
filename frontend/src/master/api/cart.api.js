@@ -10,8 +10,10 @@ export const addToCart = async (product) => {
   return res.data;
 };
 
-export const removeAllFromCart = async (product) => {
-  const res = await Axios.delete(`/cart`, { productId: product._id });
+export const removeAllFromCart = async (productId) => {
+  const res = await Axios.delete(`/cart`, {
+    data: { productId },
+  });
   return res.data;
 };
 

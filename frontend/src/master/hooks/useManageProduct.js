@@ -29,7 +29,7 @@ export const useManageProduct = () => {
     onSuccess: (data) => {
       setNewProduct(initalProductValue);
       successMessage(data.message);
-      queryClient.invalidateQueries(["GET_PRODUCT_LIST"]);
+      queryClient.invalidateQueries({ queryKey: ["GET_PRODUCT_LIST"] });
     },
     onError: (e) => {
       errorMessage(e.response.data.message);
@@ -39,7 +39,7 @@ export const useManageProduct = () => {
   const deleteProductMutation = useMutation({
     mutationFn: deleteProductFn,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["GET_PRODUCT_LIST"]);
+      queryClient.invalidateQueries({ queryKey: ["GET_PRODUCT_LIST"] });
       successMessage(data.message);
     },
     onError: (e) => {
@@ -50,7 +50,7 @@ export const useManageProduct = () => {
   const tootleFeaturedProductMutation = useMutation({
     mutationFn: toogleFeaturedProduct,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["GET_PRODUCT_LIST"]);
+      queryClient.invalidateQueries({ queryKey: ["GET_PRODUCT_LIST"] });
       successMessage(data.message);
     },
     onError: (e) => {
