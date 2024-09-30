@@ -3,6 +3,7 @@ import {
   createProduct,
   deleteProductFn,
   getAllProducts,
+  getProductsByID,
   toogleFeaturedProduct,
   updateProduct,
 } from "..";
@@ -22,6 +23,7 @@ export const useManageProduct = ({ productId = null }) => {
     images: [],
     size: false,
   };
+
   const categories = [
     "jeans",
     "t-shirts",
@@ -43,6 +45,13 @@ export const useManageProduct = ({ productId = null }) => {
     queryFn: getAllProducts,
     enabled: true,
   });
+
+  const productByIdQuery = useQuery({
+    queryKey: ["GET_PRODUCT_BY_ID"],
+    queryFn: () => getProductsByID(productId),
+    enabled: !!productId,
+  });
+  console.log(productByIdQuery);
 
   useEffect(() => {
     if (productByIdQuery.data) {
