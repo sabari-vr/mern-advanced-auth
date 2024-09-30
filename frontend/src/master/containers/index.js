@@ -6,5 +6,6 @@ export * from "./ResetPasswordPage";
 export * from "./SignUpPage";
 export * from "./ProtectedRoute";
 export * from "./HomePage";
-export * from "./AdminPage";
 export * from "./CartPage";
+export * from "./AdminRoutes";
+export * from "./ProductDetailView";

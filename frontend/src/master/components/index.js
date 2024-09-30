@@ -8,3 +8,4 @@ export * from "./AnalyticsTab";
 export * from "./CreateProductForm";
 export * from "./ProductsList";
 export * from "./ProductCard";
+export * from "./EditProductForm";

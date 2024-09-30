@@ -5,19 +5,22 @@ export const getCart = async () => {
   return res.data;
 };
 
-export const addToCart = async (product) => {
-  const res = await Axios.post(`/cart`, { productId: product._id });
+export const addToCart = async ({ product, size }) => {
+  const res = await Axios.post(`/cart`, { productId: product._id, size });
   return res.data;
 };
 
-export const removeAllFromCart = async (productId) => {
+export const removeAllFromCart = async ({ productId, size }) => {
   const res = await Axios.delete(`/cart`, {
-    data: { productId },
+    data: { productId, size },
   });
   return res.data;
 };
 
-export const updateQnty = async ({ id, quantity }) => {
-  const res = await Axios.put(`/cart/${id}`, { quantity: quantity });
+export const updateQnty = async ({ id, quantity, size }) => {
+  const res = await Axios.put(`/cart/${id}`, {
+    quantity: quantity,
+    size: size,
+  });
   return res.data;
 };

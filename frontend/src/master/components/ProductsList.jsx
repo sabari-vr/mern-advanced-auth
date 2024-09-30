@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { Trash, Star } from "lucide-react";
+import { Trash, Star, Pencil } from "lucide-react";
 import { useManageProduct } from "..";
+import { useNavigate } from "react-router-dom";
 
 const ProductsList = () => {
-    const { deleteProduct, toggleFeaturedProduct, productListQuery } = useManageProduct();
+    const navigate = useNavigate()
+    const { deleteProduct, toggleFeaturedProduct, productListQuery } = useManageProduct({ productId: null });
     const { data, isFetching } = !!productListQuery && productListQuery
     const { products } = !!data && !isFetching && data
 
@@ -59,7 +61,7 @@ const ProductsList = () => {
                                     <div className='flex-shrink-0 h-10 w-10'>
                                         <img
                                             className='h-10 w-10 rounded-full object-cover'
-                                            src={product.image}
+                                            src={product.images[0]}
                                             alt={product.name}
                                         />
                                     </div>
@@ -84,6 +86,12 @@ const ProductsList = () => {
                                 </button>
                             </td>
                             <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
+                                <button
+                                    onClick={() => navigate(`${product._id}`)}
+                                    className='text-green-400 hover:text-green-300 pe-3'
+                                >
+                                    <Pencil className='h-5 w-5' />
+                                </button>
                                 <button
                                     onClick={() => deleteProduct(product._id)}
                                     className='text-red-400 hover:text-red-300'

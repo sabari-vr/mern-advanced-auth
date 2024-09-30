@@ -11,21 +11,12 @@ const AppLoyout = ({ children }) => {
                 </div>
             </div>
 
-            <div className='relative z-50 pt-20'>
+            <div className='relative z-20 pt-20'>
                 {children}
-                {/* <div className='absolute bottom-5 text-white w-full text-center'>Made with 💖 by <a target='blank' href='https://sabari-vr.github.io/my-portfolio' className='font-bold'>Sabari V R</a></div> */}
             </div>
             <Toaster />
         </div>
-        // <div
-        //     className='min-h-screen bg-gradient-to-br
-        //   from-gray-900 via-green-900 to-emerald-900 flex items-center justify-center relative overflow-hidden'
-        // >
-        //     <div className='relative z-50 pt-20 '>
-        //         {children}
-        //     </div>
-        //     <Toaster />
-        // </div>
+
     )
 }
 

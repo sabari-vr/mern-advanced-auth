@@ -30,6 +30,9 @@ const userSchema = new Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
         },
+        size: {
+          type: String,
+        },
       },
     ],
     role: {

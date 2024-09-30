@@ -2,21 +2,20 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from './containers/LoginPage';
-import FloatingShape from './components/FloatingShape';
 import SignUpPage from './containers/SignUpPage';
 import EmailVerificationPage from './containers/EmailVerificationPage';
 import { AppScope, useAppScope } from './context/AppScope';
 import { ProtectedRoute } from './containers';
-import DashboardPage from './containers/DashboardPage';
 import ForgotPasswordPage from './containers/ForgotPasswordPage';
 import ResetPasswordPage from './containers/ResetPasswordPage';
 import HomePage from './containers/HomePage';
 import Navbar from './components/Navbar';
-import AdminPage from './containers/AdminPage';
 import CategoryPage from './containers/CategoryPage';
 import { CartScope } from './context';
 import AppLoyout from './layout/AppLoyout';
 import CartPage from './containers/CartPage';
+import AdminRoutes from './containers/AdminRoutes';
+import ProductDetailView from './containers/ProductDetailView';
 
 export const Master = () => {
     const queryClient = new QueryClient({
@@ -41,6 +40,7 @@ export const Master = () => {
                             <Route path='forgot-password' element={<ForgotPasswordPage />} />
                             <Route path='reset-password/:token' element={<ResetPasswordPage />} />
                             <Route path='/category/:category' element={<CategoryPage />} />
+                            <Route path='/category/:category/:id' element={<ProductDetailView />} />
                             <Route
                                 exact
                                 element={
@@ -64,7 +64,7 @@ const Home = () => {
     } = useAppScope();
     return (
         <Routes>
-            <Route path="/secret-dashboard" element={user?.role === "admin" ? <AdminPage /> : <Navigate to='/' replace />} />
+            <Route path="/secret-dashboard/*" element={user?.role === "admin" ? <AdminRoutes /> : <Navigate to='/' replace />} />
             <Route path='*' element={<Navigate to='/' replace />} />
             <Route path='/cart' element={<CartPage />} />
         </Routes>

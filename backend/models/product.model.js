@@ -17,8 +17,8 @@ const productSchema = new Schema(
       min: 0,
       required: true,
     },
-    image: {
-      type: String,
+    images: {
+      type: Array,
       required: [true, "Image is required"],
     },
     category: {
@@ -28,6 +28,9 @@ const productSchema = new Schema(
     isFeatured: {
       type: Boolean,
       default: false,
+    },
+    size: {
+      type: Object,
     },
   },
   { timestamps: true }

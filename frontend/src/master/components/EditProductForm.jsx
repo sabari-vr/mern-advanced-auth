@@ -2,11 +2,13 @@ import { motion } from "framer-motion";
 import { PlusCircle, Upload, Loader, X } from "lucide-react";
 import { useManageProduct } from '../hooks/useManageProduct';
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 
-const CreateProductForm = () => {
-    const { createProductMutation, newProduct, setNewProduct, previewImages, setPreviewImages, sizeStock, setSizeStock, categories, sizes } = useManageProduct({ productId: null });
-    const { isPending: loading } = createProductMutation;
+const EditProductForm = () => {
+    const { id } = useParams()
+    const { updateProductMutation, newProduct, setNewProduct, previewImages, setPreviewImages, sizeStock, setSizeStock, categories, sizes } = useManageProduct({ productId: id });
+    const { isPending: loading } = updateProductMutation;
 
     const fileToBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -25,19 +27,28 @@ const CreateProductForm = () => {
             formData.append('data', JSON.stringify(rest));
             const base64Images = await Promise.all(
                 previewImages.map(async (image) => {
-                    const base64 = await fileToBase64(image.file);
-                    return {
-                        name: image.file.name,
-                        type: image.file.type,
-                        base64: base64
-                    };
+                    if (image.file) {
+                        const base64 = await fileToBase64(image.file);
+                        return {
+                            name: image.file.name,
+                            type: image.file.type,
+                            base64: base64
+                        };
+                    } else if (image.url) {
+                        return {
+                            name: image.url.split('/').pop(),
+                            type: '',
+                            url: image.url
+                        };
+                    }
+
                 })
             );
 
             formData.append('images', JSON.stringify(base64Images));
-            createProductMutation.mutate(formData);
+            updateProductMutation.mutate({ id, formData });
         } catch {
-            console.log("error creating a product");
+            console.log("error updaing a product");
         }
     };
 
@@ -80,7 +91,7 @@ const CreateProductForm = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
         >
-            <h2 className="text-2xl font-semibold mb-6 text-emerald-300">Create New Product</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-emerald-300">Edit Product</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name */}
@@ -216,7 +227,7 @@ const CreateProductForm = () => {
                     ) : (
                         <>
                             <PlusCircle className="mr-2 h-5 w-5" />
-                            Create Product
+                            Update Product
                         </>
                     )}
                 </button>
@@ -225,4 +236,4 @@ const CreateProductForm = () => {
     );
 };
 
-export default CreateProductForm;
+export default EditProductForm;

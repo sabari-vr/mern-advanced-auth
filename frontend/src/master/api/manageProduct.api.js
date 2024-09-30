@@ -1,12 +1,30 @@
 import { Axios } from "../../utils";
 
 export const createProduct = async (payload) => {
-  const res = await Axios.post("/products", payload);
+  const res = await Axios.post("/products", payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res.data;
+};
+
+export const updateProduct = async ({ id, formData }) => {
+  const res = await Axios.put(`/products/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 
 export const getAllProducts = async () => {
   const res = await Axios.get("/products");
+  return res.data;
+};
+
+export const getProductsByID = async (id) => {
+  const res = await Axios.get(`/products/${id}`);
   return res.data;
 };
 
