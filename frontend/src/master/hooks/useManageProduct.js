@@ -22,6 +22,8 @@ export const useManageProduct = ({ productId = null }) => {
     category: "",
     images: [],
     size: false,
+    color: "",
+    batchId: "",
   };
 
   const categories = [
@@ -51,7 +53,6 @@ export const useManageProduct = ({ productId = null }) => {
     queryFn: () => getProductsByID(productId),
     enabled: !!productId,
   });
-  console.log(productByIdQuery);
 
   useEffect(() => {
     if (productByIdQuery.data) {
@@ -63,6 +64,8 @@ export const useManageProduct = ({ productId = null }) => {
           draft.price = data.price;
           draft.category = data.category;
           draft.size = data.size;
+          draft.color = data.color;
+          draft.batchId = data.batchId;
           return draft;
         });
       }

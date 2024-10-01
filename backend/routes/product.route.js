@@ -17,11 +17,12 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get("/", protectRoute, adminRoute, getAllProducts);
-router.get("/:id", getProductById);
+router.get("/recommendations", getRecommendedProducts);
 
 router.get("/featured", getFeaturedProducts);
+router.get("/:id", getProductById);
+
 router.get("/category/:category", getProductsByCategory);
-router.get("/recommendations", getRecommendedProducts);
 router.post(
   "/",
   protectRoute,

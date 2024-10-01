@@ -5,6 +5,11 @@ export const getCart = async () => {
   return res.data;
 };
 
+export const getRecommendations = async () => {
+  const res = await Axios.get(`/products/recommendations`);
+  return res.data;
+};
+
 export const addToCart = async ({ product, size }) => {
   const res = await Axios.post(`/cart`, { productId: product._id, size });
   return res.data;

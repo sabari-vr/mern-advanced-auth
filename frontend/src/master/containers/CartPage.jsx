@@ -32,7 +32,7 @@ const CartPage = () => {
                                 ))}
                             </div>
                         )}
-                        {/* {cart.length > 0 && <PeopleAlsoBought />} */}
+                        {cart.length > 0 && <PeopleAlsoBought />}
                     </motion.div>
 
                     {cart.length > 0 && (

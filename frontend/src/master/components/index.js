@@ -9,3 +9,5 @@ export * from "./CreateProductForm";
 export * from "./ProductsList";
 export * from "./ProductCard";
 export * from "./EditProductForm";
+export * from "./CategoryList";
+export * from "./FeaturedProducts";

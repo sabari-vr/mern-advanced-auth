@@ -1,28 +1,25 @@
 import { useEffect, useState } from "react";
-import ProductCard from "./ProductCard";
-import toast from "react-hot-toast";
+import ProductCard from "../components/ProductCard";
 import LoadingSpinner from "./LoadingSpinner";
+import { useQuery } from "@tanstack/react-query";
+import { getRecommendations } from "..";
 
 const PeopleAlsoBought = () => {
     const [recommendations, setRecommendations] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+
+    const productListQuery = useQuery({
+        queryKey: ["GET_RECOMENTED_PRODUCTS_BY"],
+        queryFn: () => getRecommendations(),
+        enabled: true,
+    });
 
     useEffect(() => {
-        // const fetchRecommendations = async () => {
-        // 	try {
-        // 		const res = await axios.get("/products/recommendations");
-        // 		setRecommendations(res.data);
-        // 	} catch (error) {
-        // 		toast.error(error.response.data.message || "An error occurred while fetching recommendations");
-        // 	} finally {
-        // 		setIsLoading(false);
-        // 	}
-        // };
+        if (productListQuery.data) {
+            setRecommendations(productListQuery.data)
+        }
+    }, [productListQuery?.data]);
 
-        // fetchRecommendations();
-    }, []);
-
-    if (isLoading) return <LoadingSpinner />;
+    if (productListQuery.isLoading) return <LoadingSpinner />;
 
     return (
         <div className='mt-8'>

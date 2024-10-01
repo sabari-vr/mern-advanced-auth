@@ -23,6 +23,11 @@ export const getAllProducts = async () => {
   return res.data;
 };
 
+export const getFeaturedProduct = async () => {
+  const res = await Axios.get("/products/featured");
+  return res.data;
+};
+
 export const getProductsByID = async (id) => {
   const res = await Axios.get(`/products/${id}`);
   return res.data;

@@ -26,7 +26,18 @@ export const getProductById = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    res.json(product);
+    const relatedProducts = await Product.find({
+      batchId: product.batchId,
+      _id: { $ne: id },
+    }).select("color _id images");
+
+    const related = relatedProducts.map((p) => ({
+      color: p.color,
+      id: p._id,
+      image: p.images[0],
+    }));
+
+    res.json({ product, related });
   } catch (error) {
     console.log("Error in getProductById controller", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -53,7 +64,8 @@ export const createProduct = async (req, res) => {
   try {
     const productData = JSON.parse(req.body.data);
     const images = JSON.parse(req.body.images);
-    const { name, description, price, category, size } = productData;
+    const { name, description, price, category, size, color, batchId } =
+      productData;
 
     const imageUrls = [];
 
@@ -79,6 +91,8 @@ export const createProduct = async (req, res) => {
       images: imageUrls,
       category,
       size,
+      color,
+      batchId,
     });
 
     res.status(201).json(product);
@@ -93,7 +107,8 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const productData = JSON.parse(req.body.data);
     const images = JSON.parse(req.body.images);
-    const { name, description, price, category, size } = productData;
+    const { name, description, price, category, size, color, batchId } =
+      productData;
 
     const imageUrls = [];
 
@@ -123,6 +138,8 @@ export const updateProduct = async (req, res) => {
         images: imageUrls.length > 0 ? imageUrls : undefined,
         category,
         size,
+        color,
+        batchId,
       },
       { new: true }
     );
@@ -183,7 +200,7 @@ export const getRecommendedProducts = async (req, res) => {
           _id: 1,
           name: 1,
           description: 1,
-          image: 1,
+          images: 1,
           price: 1,
         },
       },

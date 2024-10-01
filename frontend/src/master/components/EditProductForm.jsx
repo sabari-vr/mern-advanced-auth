@@ -165,6 +165,38 @@ const EditProductForm = () => {
                     </select>
                 </div>
 
+                <div>
+                    <label htmlFor="color" className="block text-sm font-medium text-gray-300">
+                        Colour
+                    </label>
+                    <input
+                        type="text"
+                        id="color"
+                        name="color"
+                        value={newProduct.color}
+                        onChange={(e) => setNewProduct({ ...newProduct, color: e.target.value })}
+                        step="0.01"
+                        className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="batchId" className="block text-sm font-medium text-gray-300">
+                        Batch ID
+                    </label>
+                    <input
+                        type="text"
+                        id="batchId"
+                        name="batchId"
+                        value={newProduct.batchId}
+                        onChange={(e) => setNewProduct({ ...newProduct, batchId: e.target.value })}
+                        step="0.01"
+                        className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        required
+                    />
+                </div>
+
                 {/* Multi-image upload */}
                 <div className="mt-1 flex items-center">
                     <input

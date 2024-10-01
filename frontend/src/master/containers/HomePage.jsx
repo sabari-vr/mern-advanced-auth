@@ -1,7 +1,7 @@
-import { useEffect } from "react";
 import CategoryItem from "../components/CategoryItem";
-// import { useProductStore } from "../stores/useProductStore";
-// import FeaturedProducts from "../components/FeaturedProducts";
+import FeaturedProducts from "../components/FeaturedProducts";
+import { getFeaturedProduct } from "../api";
+import { useQuery } from "@tanstack/react-query";
 
 const categories = [
     { href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },
@@ -14,11 +14,13 @@ const categories = [
 ];
 
 const HomePage = () => {
-    // const { fetchFeaturedProducts, products, isLoading } = useProductStore();
+    const productListQuery = useQuery({
+        queryKey: ["GET_FEATURED_PRODUCTS"],
+        queryFn: getFeaturedProduct,
+        enabled: true,
+    });
 
-    // useEffect(() => {
-    // 	fetchFeaturedProducts();
-    // }, [fetchFeaturedProducts]);
+    const { data: products, isLoading } = productListQuery
 
     return (
         <div className='relative min-h-screen text-white overflow-hidden'>
@@ -36,7 +38,7 @@ const HomePage = () => {
                     ))}
                 </div>
 
-                {/* {!isLoading && products.length > 0 && <FeaturedProducts featuredProducts={products} />} */}
+                {!isLoading && products?.length > 0 && <FeaturedProducts featuredProducts={products} />}
             </div>
         </div>
     );
