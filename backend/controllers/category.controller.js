@@ -29,8 +29,6 @@ export const createCategory = async (req, res) => {
 
 export const getCategories = async (req, res) => {
   try {
-    console.log("sab");
-
     const categories = await Category.find();
     res.status(200).json(categories);
   } catch (error) {
@@ -56,18 +54,38 @@ export const getCategoryById = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
   const { id } = req.params;
-  const { name } = req.body;
+
+  const data = JSON.parse(req?.body?.data);
+  const images = req?.body?.images ? JSON.parse(req?.body?.images) : [];
+  const { name } = data;
 
   try {
+    let cloudinaryResponse;
+
+    const file = images[0];
+    if (file && file.base64) {
+      cloudinaryResponse = await cloudinary.uploader.upload(file.base64, {
+        folder: "category",
+      });
+    }
+
     const category = await Category.findByIdAndUpdate(
       id,
-      { name },
+      {
+        name,
+        image: cloudinaryResponse?.secure_url || undefined,
+      },
       { new: true, runValidators: true }
     );
+
     if (!category) {
       return res.status(404).json({ msg: "Category not found" });
     }
-    res.status(200).json({ msg: "Category updated successfully", category });
+
+    res.status(200).json({
+      msg: "Category updated successfully",
+      category,
+    });
   } catch (error) {
     console.error("Error updating category:", error.message);
     res.status(500).json({ msg: "Server error", error: error.message });
@@ -78,11 +96,21 @@ export const deleteCategory = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const category = await Category.findByIdAndDelete(id);
+    const category = await Category.findById(id);
     if (!category) {
       return res.status(404).json({ msg: "Category not found" });
     }
-    res.status(200).json({ msg: "Category deleted successfully" });
+
+    const imagePublicId = category.image.split("/").pop().split(".")[0];
+    try {
+      await cloudinary.uploader.destroy(`category/${imagePublicId}`);
+      console.log(`Deleted image from Cloudinary`);
+    } catch (error) {
+      console.log(`Error deleting image from Cloudinary`, error);
+    }
+    await Category.findByIdAndDelete(id);
+
+    res.status(200).json({ msg: "Category and image deleted successfully" });
   } catch (error) {
     console.error("Error deleting category:", error.message);
     res.status(500).json({ msg: "Server error", error: error.message });

@@ -29,8 +29,8 @@ const productSchema = new Schema(
       type: Array,
       required: [true, "Image is required"],
     },
-    category: {
-      type: String,
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     isFeatured: {

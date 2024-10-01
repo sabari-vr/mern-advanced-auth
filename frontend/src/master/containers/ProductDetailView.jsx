@@ -9,7 +9,7 @@ import { useAppScope, useCartScope } from '../context';
 import { errorMessage } from '../../utils';
 
 const ProductDetailView = () => {
-    const { id, category } = useParams()
+    const { id } = useParams()
     const navigate = useNavigate()
     const [selectedSize, setSelectedSize] = useState(null);
     const [product, setProduct] = useState(false);
@@ -102,7 +102,7 @@ const ProductDetailView = () => {
                 <div className="md:w-1/2 md:pl-8 mt-8 md:mt-0 flex flex-col justify-between">
                     <div>
                         <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
-                        <p className="text-2xl font-semibold mb-4">${product.price.toFixed(2)}</p>
+                        <p className="text-2xl font-semibold mb-4">₹ {product.price.toFixed(2)}</p>
                         <p className="text-xl font-semibold mb-4">{product.color}</p>
                     </div>
 
@@ -113,7 +113,7 @@ const ProductDetailView = () => {
                             <div className="flex space-x-2">
                                 {related.length > 0 && related.map((e) => {
                                     return (
-                                        <div onClick={() => navigate(`/category/${category}/${e.id}`)}><img className='h-[80px]' src={e.image} /><label>{e.label}</label></div>
+                                        <div onClick={() => navigate(`/product/${e.id}`)}><img className='h-[80px]' src={e.image} /><label>{e.label}</label></div>
                                     )
                                 })}
                             </div>

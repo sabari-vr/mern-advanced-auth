@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from "framer-motion";
 import { Trash, Save, X, Plus, Upload } from "lucide-react";
 import { useCategory } from '..';
@@ -17,18 +17,34 @@ const CategoryList = () => {
         setEditingId,
         setEditName,
         editName,
-        previewImages, setPreviewImages
+        previewImages, setPreviewImages,
+        previewImagesEdit, setPreviewImagesEdit
     } = useCategory({ load: true, category: null })
 
-    const handleImagePreview = (event) => {
+    useEffect(() => {
+        if (!editingId) {
+            setPreviewImagesEdit(false)
+        }
+    }, [editingId])
+
+    const handleImagePreview = (event, isEdit = false) => {
+        console.log(isEdit);
+
         const file = event.target.files[0];
         if (file) {
             const preview = { url: URL.createObjectURL(file), file: file };
+            if (isEdit) {
+                setPreviewImagesEdit((draft) => {
+                    draft = [preview];
+                    return draft;
+                })
+            } else {
+                setPreviewImages((draft) => {
+                    draft = [preview];
+                    return draft;
+                });
+            }
 
-            setPreviewImages((draft) => {
-                draft = [preview];
-                return draft;
-            });
         }
     };
 
@@ -69,7 +85,7 @@ const CategoryList = () => {
                                 id="image"
                                 className="sr-only"
                                 accept="image/*"
-                                onChange={handleImagePreview}
+                                onChange={(e) => handleImagePreview(e, false)}
                             />
                             <label
                                 htmlFor="image"
@@ -89,17 +105,33 @@ const CategoryList = () => {
                         <tr key={category._id} className='hover:bg-gray-700'>
                             <td className='px-6 py-4 whitespace-nowrap'>
                                 {editingId === category._id ? (
-                                    <input
-                                        type="text"
-                                        value={editName}
-                                        onChange={(e) => setEditName(e.target.value)}
-                                        className='bg-gray-700 text-white px-2 py-1 rounded'
-                                    />
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={editName}
+                                            onChange={(e) => setEditName(e.target.value)}
+                                            className='bg-gray-700 text-white px-2 py-1 rounded'
+                                        />
+                                        <input
+                                            type="file"
+                                            id="image2"
+                                            className="sr-only"
+                                            accept="image/*"
+                                            onChange={(e) => handleImagePreview(e, true)}
+                                        />
+                                        <label
+                                            htmlFor="image2"
+                                            className="cursor-pointer ms-2 bg-gray-700 py-2 px-3 border border-gray-600 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                                        >
+                                            <Upload className="h-5 w-5 inline-block mr-2" />
+                                            Upload Images
+                                        </label>
+                                    </>
                                 ) : (
                                     <div className='text-sm text-gray-300'>{category.name}</div>
                                 )}
                                 <div>
-                                    <img style={{ height: "50px " }} src={category.image} />
+                                    <img style={{ height: "50px " }} src={editingId === category._id && !!previewImagesEdit ? previewImagesEdit[0].url : category.image} />
                                 </div>
                             </td>
                             <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>

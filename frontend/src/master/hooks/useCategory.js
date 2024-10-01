@@ -5,22 +5,30 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
+  getFeaturedProduct,
 } from "..";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useImmer } from "use-immer";
 import { errorMessage } from "../../utils";
 
-export const useCategory = ({ category = null, load = false }) => {
+export const useCategory = ({ categoryId = null, load = false }) => {
   const [editingId, setEditingId] = useState(null);
   const [previewImages, setPreviewImages] = useImmer(false);
+  const [previewImagesEdit, setPreviewImagesEdit] = useImmer(false);
   const [editName, setEditName] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
   const queryClient = useQueryClient();
 
   const productListQuery = useQuery({
-    queryKey: ["GET_PRODUCTS_BY_CATEGORY", category],
-    queryFn: () => getProductsByCategory(category),
-    enabled: !!category && load,
+    queryKey: ["GET_PRODUCTS_BY_CATEGORY", categoryId],
+    queryFn: () => getProductsByCategory(categoryId),
+    enabled: !!categoryId,
+  });
+
+  const feturedProductListQuery = useQuery({
+    queryKey: ["GET_FEATURED_PRODUCTS"],
+    queryFn: getFeaturedProduct,
+    enabled: load,
   });
 
   const { data: categories, isLoading } = useQuery({
@@ -56,8 +64,29 @@ export const useCategory = ({ category = null, load = false }) => {
     setEditName(category.name);
   };
 
-  const handleSave = () => {
-    updateMutation.mutate({ id: editingId, name: editName });
+  const handleSave = async () => {
+    try {
+      const formData = new FormData();
+
+      formData.append("data", JSON.stringify({ name: editName }));
+      if (previewImagesEdit) {
+        const base64Images = await Promise.all(
+          previewImagesEdit.map(async (image) => {
+            const base64 = await fileToBase64(image.file);
+            return {
+              name: image.file.name,
+              type: image.file.type,
+              base64: base64,
+            };
+          })
+        );
+        formData.append("images", JSON.stringify(base64Images));
+      }
+      updateMutation.mutate({ id: editingId, formData });
+    } catch (error) {
+      console.error("Error adding category:", error);
+      errorMessage("Failed to update category");
+    }
   };
 
   const handleDelete = (id) => {
@@ -129,5 +158,8 @@ export const useCategory = ({ category = null, load = false }) => {
     editName,
     previewImages,
     setPreviewImages,
+    feturedProductListQuery,
+    previewImagesEdit,
+    setPreviewImagesEdit,
   };
 };

@@ -24,8 +24,12 @@ export const getCategoryById = async (id) => {
   return res.data;
 };
 
-export const updateCategory = async ({ id, name }) => {
-  const res = await Axios.put(`/categories/${id}`, { name });
+export const updateCategory = async ({ id, formData }) => {
+  const res = await Axios.put(`/categories/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 

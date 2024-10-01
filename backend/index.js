@@ -19,7 +19,7 @@ const __dirname = path.resolve();
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
-app.use(express.json({ limit: "10mb" })); // allows us to parse incoming requests:req.body
+app.use(express.json({ limit: "15mb" })); // allows us to parse incoming requests:req.body
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);

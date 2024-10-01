@@ -1,11 +1,13 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import { useCategory } from "../hooks/useCategory";
 
 const CategoryPage = () => {
-    const { category } = useParams();
-    const { productListQuery } = useCategory({ category, load: true });
+    const { categoryId } = useParams();
+    const [searchParams] = useSearchParams()
+    const catagory = searchParams.get('category')
+    const { productListQuery } = useCategory({ categoryId, load: false });
     const { data, isFetching } = !!productListQuery && productListQuery
     const { products } = !!data && !isFetching && data
 
@@ -18,7 +20,7 @@ const CategoryPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                    {catagory.charAt(0).toUpperCase() + catagory.slice(1)}
                 </motion.h1>
 
                 <motion.div

@@ -1,26 +1,11 @@
 import CategoryItem from "../components/CategoryItem";
 import FeaturedProducts from "../components/FeaturedProducts";
-import { getFeaturedProduct } from "../api";
 import { useQuery } from "@tanstack/react-query";
-
-const categories = [
-    { href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },
-    { href: "/t-shirts", name: "T-shirts", imageUrl: "/tshirts.jpg" },
-    { href: "/shoes", name: "Shoes", imageUrl: "/shoes.jpg" },
-    { href: "/glasses", name: "Glasses", imageUrl: "/glasses.png" },
-    { href: "/jackets", name: "Jackets", imageUrl: "/jackets.jpg" },
-    { href: "/suits", name: "Suits", imageUrl: "/suits.jpg" },
-    { href: "/bags", name: "Bags", imageUrl: "/bags.jpg" },
-];
+import { useCategory } from "../hooks";
 
 const HomePage = () => {
-    const productListQuery = useQuery({
-        queryKey: ["GET_FEATURED_PRODUCTS"],
-        queryFn: getFeaturedProduct,
-        enabled: true,
-    });
-
-    const { data: products, isLoading } = productListQuery
+    const { categories, feturedProductListQuery } = useCategory({ load: true, categoryId: null })
+    const { data: products, isLoading } = feturedProductListQuery
 
     return (
         <div className='relative min-h-screen text-white overflow-hidden'>
@@ -33,7 +18,7 @@ const HomePage = () => {
                 </p>
 
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                    {categories.map((category) => (
+                    {!!categories && categories?.map((category) => (
                         <CategoryItem category={category} key={category.name} />
                     ))}
                 </div>

@@ -10,7 +10,13 @@ import { protectRoute, adminRoute } from "../middleware/auth.js";
 import multer from "multer";
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50 MB limit for files
+    fieldSize: 10 * 1024 * 1024, // 10 MB limit for form fields (adjust as needed)
+  },
+});
 
 router.post(
   "/",
@@ -21,7 +27,13 @@ router.post(
 );
 router.get("/", protectRoute, adminRoute, getCategories);
 router.get("/:id", protectRoute, adminRoute, getCategoryById);
-router.put("/:id", protectRoute, adminRoute, updateCategory);
+router.put(
+  "/:id",
+  protectRoute,
+  adminRoute,
+  upload.array("images"),
+  updateCategory
+);
 router.delete("/:id", protectRoute, adminRoute, deleteCategory);
 
 export default router;

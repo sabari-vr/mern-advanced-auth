@@ -39,8 +39,8 @@ export const Master = () => {
                             <Route path='verify-email' element={<EmailVerificationPage />} />
                             <Route path='forgot-password' element={<ForgotPasswordPage />} />
                             <Route path='reset-password/:token' element={<ResetPasswordPage />} />
-                            <Route path='/category/:category' element={<CategoryPage />} />
-                            <Route path='/category/:category/:id' element={<ProductDetailView />} />
+                            <Route path='/category/:categoryId' element={<CategoryPage />} />
+                            <Route path='/product/:id' element={<ProductDetailView />} />
                             <Route
                                 exact
                                 element={

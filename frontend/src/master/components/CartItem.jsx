@@ -1,7 +1,8 @@
 import { Minus, Plus, Trash } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CartItem = ({ item, updateQuantityM, removeAllFromCartM }) => {
-
+    const navigate = useNavigate()
     const removeFromCart = (productId, size) => {
         removeAllFromCartM.mutate({ productId, size })
     };
@@ -17,7 +18,7 @@ const CartItem = ({ item, updateQuantityM, removeAllFromCartM }) => {
                         <img className='h-16 sm:h-32 rounded object-cover' src={item.images[0]} />
                     </div>
                     <div className='flex-1 ml-4 min-w-0'>
-                        <p className='text-base font-medium text-white hover:text-emerald-400 hover:underline truncate'>
+                        <p className='text-base font-medium text-white hover:text-emerald-400 hover:underline truncate' onClick={() => navigate('/product/' + item._id)}>
                             {item.name}
                         </p>
                     </div>
