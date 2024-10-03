@@ -1,4 +1,4 @@
-import { Address } from "../models/user.model.js";
+import { Address, User } from "../models/user.model.js";
 
 export const getAddress = async (req, res) => {
   try {
@@ -84,5 +84,76 @@ export const deleteAddress = async (req, res) => {
     res
       .status(400)
       .json({ message: "Error deleting address", error: error.message });
+  }
+};
+
+export const getMyWishlist = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId).populate("wishList.product");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json(user.wishList);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+export const toggleWishlist = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { productId } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const existingWishlistItem = user.wishList.find(
+      (item) => item.product.toString() === productId
+    );
+
+    if (existingWishlistItem) {
+      user.wishList = user.wishList.filter(
+        (item) => item.product.toString() !== productId
+      );
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Product removed from wishlist",
+        wishList: user.wishList,
+      });
+    } else {
+      user.wishList.push({
+        product: productId,
+      });
+      await user.save();
+
+      return res.status(201).json({
+        success: true,
+        message: "Product added to wishlist",
+        wishList: user.wishList,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };

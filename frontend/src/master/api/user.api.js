@@ -19,3 +19,13 @@ export const deleteAddress = async (id) => {
   const res = await Axios.delete(`/user/address/${id}`);
   return res.data;
 };
+
+export const getWishlist = async () => {
+  const res = await Axios.get(`/user/wishlist`);
+  return res.data;
+};
+
+export const toggleWishlist = async (id) => {
+  const res = await Axios.post(`/user/wishlist/toggle`, { productId: id });
+  return res.data;
+};

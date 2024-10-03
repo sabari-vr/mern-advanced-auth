@@ -4,6 +4,8 @@ import {
   createAddress,
   deleteAddress,
   getAddress,
+  getMyWishlist,
+  toggleWishlist,
   updateAddress,
 } from "../controllers/user.controller.js";
 
@@ -13,5 +15,8 @@ router.get("/address", protectRoute, getAddress);
 router.post("/address", protectRoute, createAddress);
 router.put("/address/:id", protectRoute, updateAddress);
 router.delete("/address/:id", protectRoute, deleteAddress);
+
+router.get("/wishlist", protectRoute, getMyWishlist);
+router.post("/wishlist/toggle", protectRoute, toggleWishlist);
 
 export default router;

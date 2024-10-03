@@ -35,6 +35,14 @@ const userSchema = new Schema(
         },
       },
     ],
+    wishList: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+      },
+    ],
     role: {
       type: String,
       enum: ["customer", "admin"],

@@ -13,3 +13,4 @@ export * from "./MyProfile";
 export * from "./OrderPlaced";
 export * from "./ManageOrders";
 export * from "./ReordePage";
+export * from "./MyWishList";

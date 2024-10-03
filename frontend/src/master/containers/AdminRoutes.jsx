@@ -12,12 +12,11 @@ const AdminRoutes = () => {
     return (
         <AdminLayout>
             <Routes>
-                <Route path="/" element={<h1>Admin</h1>} />
+                <Route path="/" element={<AnalyticsTab />} />
                 <Route path="/create-product" element={<CreateProductForm />} />
                 <Route path="/products" element={<ProductsList />} />
                 <Route path="/products/:id" element={<EditProductForm />} />
                 <Route path="/category" element={<CategoryList />} />
-                <Route path="/analytics" element={<AnalyticsTab />} />
                 <Route path="/orders" element={<ManageOrders />} />
             </Routes>
         </AdminLayout>

@@ -1,6 +1,12 @@
+import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
+
+    const handleWishlistClick = () => {
+        console.log("Added to wishlist:", product._id);
+    };
+
     return (
         <div className='flex w-full relative flex-col overflow-hidden rounded-lg border border-gray-700 shadow-lg'>
             <Link to={'/product/' + product._id}>
@@ -18,6 +24,12 @@ const ProductCard = ({ product }) => {
                     </div>
                 </div>
             </Link>
+            <button
+                className='absolute bottom-12 right-3 z-100 text-emerald-400 hover:text-emerald-600 transition-colors'
+                onClick={handleWishlistClick}
+            >
+                <Heart size={24} />
+            </button>
         </div>
     );
 };
