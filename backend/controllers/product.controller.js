@@ -1,15 +1,17 @@
 import cloudinary from "../config/cloudinary.js";
+import { Category } from "../models/category.model.js";
 import { Product } from "../models/product.model.js";
 import DatauriParser from "datauri/parser.js";
 
 const parser = new DatauriParser();
 
-const bufferToDataURI = (file) =>
-  parser.format(path.extname(file.originalname).toString(), file.buffer);
-
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({}).populate({
+      path: "categoryId",
+      select: "name",
+      model: Category,
+    });
     res.json({ products });
   } catch (error) {
     console.log("Error in getAllProducts controller", error.message);
@@ -64,7 +66,7 @@ export const createProduct = async (req, res) => {
   try {
     const productData = JSON.parse(req.body.data);
     const images = JSON.parse(req.body.images);
-    const { name, description, price, category, size, color, batchId } =
+    const { name, description, price, categoryId, size, color, batchId } =
       productData;
 
     const imageUrls = [];
@@ -89,7 +91,7 @@ export const createProduct = async (req, res) => {
       description,
       price,
       images: imageUrls,
-      category,
+      categoryId,
       size,
       color,
       batchId,
@@ -107,7 +109,7 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const productData = JSON.parse(req.body.data);
     const images = JSON.parse(req.body.images);
-    const { name, description, price, category, size, color, batchId } =
+    const { name, description, price, categoryId, size, color, batchId } =
       productData;
 
     const imageUrls = [];
@@ -136,7 +138,7 @@ export const updateProduct = async (req, res) => {
         description,
         price,
         images: imageUrls.length > 0 ? imageUrls : undefined,
-        category,
+        categoryId,
         size,
         color,
         batchId,

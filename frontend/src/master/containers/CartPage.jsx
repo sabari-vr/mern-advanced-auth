@@ -6,12 +6,19 @@ import PeopleAlsoBought from "../components/PeopleAlsoBought";
 import OrderSummary from "../components/OrderSummary";
 import GiftCouponCard from "../components/GiftCouponCard";
 import { useCartScope } from "../context";
-import { useCart } from "../hooks";
+import { useCart, useUser } from "../hooks";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const CartPage = () => {
-    const { CartState: { cart } } = useCartScope()
+    const { CartState: { cart }, isLoading } = useCartScope()
     const { updateQuantityCartMutation,
-        removeAllFromCartMutation } = useCart()
+        removeAllFromCartMutation } = useCart({ load: false })
+
+    const { addresses, isLoading: addressLoading } = useUser({ load: true })
+
+    if (isLoading || addressLoading) {
+        return < LoadingSpinner />
+    }
 
     return (
         <div className='py-8 md:py-16'>
@@ -27,8 +34,8 @@ const CartPage = () => {
                             <EmptyCartUI />
                         ) : (
                             <div className='space-y-6'>
-                                {cart.map((item) => (
-                                    <CartItem key={item._id} item={item} updateQuantityM={updateQuantityCartMutation} removeAllFromCartM={removeAllFromCartMutation} />
+                                {cart.map((item, index) => (
+                                    <CartItem key={item._id + 'cartitem' + index} item={item} updateQuantityM={updateQuantityCartMutation} removeAllFromCartM={removeAllFromCartMutation} />
                                 ))}
                             </div>
                         )}
@@ -42,7 +49,7 @@ const CartPage = () => {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.5, delay: 0.4 }}
                         >
-                            <OrderSummary />
+                            <OrderSummary data={addresses} />
                             <GiftCouponCard />
                         </motion.div>
                     )}

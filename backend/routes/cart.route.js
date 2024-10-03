@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addToCart,
+  getCartProductById,
   getCartProducts,
   removeAllFromCart,
   updateQuantity,
@@ -13,5 +14,6 @@ router.get("/", protectRoute, getCartProducts);
 router.post("/", protectRoute, addToCart);
 router.delete("/", protectRoute, removeAllFromCart);
 router.put("/:id", protectRoute, updateQuantity);
+router.post("/create-single-order", getCartProductById);
 
 export default router;

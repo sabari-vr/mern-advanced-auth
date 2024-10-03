@@ -32,6 +32,7 @@ const productSchema = new Schema(
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "Category",
     },
     isFeatured: {
       type: Boolean,

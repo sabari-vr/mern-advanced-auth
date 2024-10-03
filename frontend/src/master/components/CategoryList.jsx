@@ -28,8 +28,6 @@ const CategoryList = () => {
     }, [editingId])
 
     const handleImagePreview = (event, isEdit = false) => {
-        console.log(isEdit);
-
         const file = event.target.files[0];
         if (file) {
             const preview = { url: URL.createObjectURL(file), file: file };

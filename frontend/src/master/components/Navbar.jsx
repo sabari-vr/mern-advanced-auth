@@ -1,13 +1,35 @@
-import { ShoppingCart, UserPlus, LogIn, LogOut, Lock } from "lucide-react";
+import { ShoppingCart, UserPlus, LogIn, LogOut, Lock, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppScope, useCartScope } from "../context";
 import { useAuth } from "..";
+import { useEffect, useRef, useState } from "react";
 
 const Navbar = () => {
     const { AppState: { user } } = useAppScope();
     const { CartState: { cart } } = useCartScope()
     const { handleLogout } = useAuth()
     const isAdmin = user?.role === "admin";
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen((prev) => !prev);
+    };
+
+    const handleOutsideClick = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            setIsDropdownOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.body.addEventListener('click', handleOutsideClick);
+
+        return function cleanup() {
+            document.body.removeEventListener('click', handleOutsideClick);
+        };
+    }, []);
 
     return (
         <header className='fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-20 transition-all duration-300 border-b border-emerald-800'>
@@ -48,14 +70,47 @@ const Navbar = () => {
                         )}
 
                         {user ? (
-                            <button
-                                className='bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 
-						rounded-md flex items-center transition duration-300 ease-in-out'
-                                onClick={handleLogout}
-                            >
-                                <LogOut size={18} />
-                                <span className='hidden sm:inline ml-2'>Log Out</span>
-                            </button>
+                            <div className="relative inline-block text-left" ref={dropdownRef} >
+                                <button
+                                    className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md flex items-center transition duration-300 ease-in-out"
+                                    onClick={toggleDropdown}
+                                >
+                                    <User size={18} />
+                                    <span className="hidden sm:inline ml-2">Account</span>
+                                </button>
+
+                                {isDropdownOpen && (
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
+                                        <ul className="py-1">
+                                            <li>
+                                                <Link to="profile"
+                                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+                                                    onClick={toggleDropdown}
+                                                >
+                                                    Profile
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link to="orders"
+                                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+                                                    onClick={toggleDropdown}
+                                                >
+                                                    Orders
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <button
+                                                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 w-full text-left"
+                                                    onClick={handleLogout}
+                                                >
+                                                    <LogOut size={18} className="inline mr-2" />
+                                                    Log Out
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
                             <>
                                 <Link
@@ -77,8 +132,8 @@ const Navbar = () => {
                         )}
                     </nav>
                 </div>
-            </div>
-        </header>
+            </div >
+        </header >
     );
 };
 

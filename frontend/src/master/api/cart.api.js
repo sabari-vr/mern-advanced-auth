@@ -29,3 +29,8 @@ export const updateQnty = async ({ id, quantity, size }) => {
   });
   return res.data;
 };
+
+export const getSingleCart = async (payload) => {
+  const res = await Axios.post(`/cart/create-single-order`, payload);
+  return res.data;
+};

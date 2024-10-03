@@ -18,12 +18,12 @@ export const createCategory = async (req, res) => {
     newCategory.image = cloudinaryResponse.secure_url;
     await newCategory.save();
     res.status(201).json({
-      msg: "Category created successfully",
+      message: "Category created successfully",
       category: newCategory,
     });
   } catch (error) {
     console.error("Error creating category:", error.message);
-    res.status(500).json({ msg: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -33,7 +33,7 @@ export const getCategories = async (req, res) => {
     res.status(200).json(categories);
   } catch (error) {
     console.error("Error getting categories:", error.message);
-    res.status(500).json({ msg: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -43,12 +43,12 @@ export const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(id);
     if (!category) {
-      return res.status(404).json({ msg: "Category not found" });
+      return res.status(404).json({ message: "Category not found" });
     }
     res.status(200).json(category);
   } catch (error) {
     console.error("Error getting category by ID:", error.message);
-    res.status(500).json({ msg: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -79,16 +79,16 @@ export const updateCategory = async (req, res) => {
     );
 
     if (!category) {
-      return res.status(404).json({ msg: "Category not found" });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     res.status(200).json({
-      msg: "Category updated successfully",
+      message: "Category updated successfully",
       category,
     });
   } catch (error) {
     console.error("Error updating category:", error.message);
-    res.status(500).json({ msg: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -98,7 +98,7 @@ export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(id);
     if (!category) {
-      return res.status(404).json({ msg: "Category not found" });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     const imagePublicId = category.image.split("/").pop().split(".")[0];
@@ -110,9 +110,11 @@ export const deleteCategory = async (req, res) => {
     }
     await Category.findByIdAndDelete(id);
 
-    res.status(200).json({ msg: "Category and image deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "Category and image deleted successfully" });
   } catch (error) {
     console.error("Error deleting category:", error.message);
-    res.status(500).json({ msg: "Server error", error: error.message });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

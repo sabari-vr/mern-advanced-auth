@@ -23,7 +23,7 @@ export const CartScope = (props) => {
     enabled: !!accessToken,
   });
 
-  const { data } = !!cartListQuery && cartListQuery
+  const { data, isLoading } = !!cartListQuery && cartListQuery
 
   useEffect(() => {
     if (data) {
@@ -48,6 +48,7 @@ export const CartScope = (props) => {
       value={{
         CartState,
         setCartState,
+        isLoading,
       }}
     >
       {props.children}

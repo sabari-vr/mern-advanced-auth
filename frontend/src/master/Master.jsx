@@ -5,7 +5,7 @@ import LoginPage from './containers/LoginPage';
 import SignUpPage from './containers/SignUpPage';
 import EmailVerificationPage from './containers/EmailVerificationPage';
 import { AppScope, useAppScope } from './context/AppScope';
-import { ProtectedRoute } from './containers';
+import { MyOrders, MyProfile, OrderPlaced, ProtectedRoute } from './containers';
 import ForgotPasswordPage from './containers/ForgotPasswordPage';
 import ResetPasswordPage from './containers/ResetPasswordPage';
 import HomePage from './containers/HomePage';
@@ -16,6 +16,7 @@ import AppLoyout from './layout/AppLoyout';
 import CartPage from './containers/CartPage';
 import AdminRoutes from './containers/AdminRoutes';
 import ProductDetailView from './containers/ProductDetailView';
+import ReordePage from './containers/ReordePage';
 
 export const Master = () => {
     const queryClient = new QueryClient({
@@ -41,6 +42,10 @@ export const Master = () => {
                             <Route path='reset-password/:token' element={<ResetPasswordPage />} />
                             <Route path='/category/:categoryId' element={<CategoryPage />} />
                             <Route path='/product/:id' element={<ProductDetailView />} />
+                            <Route path='/orders' element={<MyOrders />} />
+                            <Route path='/profile' element={<MyProfile />} />
+                            <Route path='/order-placed' element={<OrderPlaced />} />
+                            <Route path='/order' element={<ReordePage />} />
                             <Route
                                 exact
                                 element={

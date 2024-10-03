@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 
 const EditProductForm = () => {
     const { id } = useParams()
-    const { updateProductMutation, newProduct, setNewProduct, previewImages, setPreviewImages, sizeStock, setSizeStock, categories, sizes } = useManageProduct({ productId: id });
+    const { updateProductMutation, newProduct, setNewProduct, previewImages, setPreviewImages, sizeStock, setSizeStock, categories, sizes } = useManageProduct({ productId: id, load: true });
     const { isPending: loading } = updateProductMutation;
 
     const fileToBase64 = (file) => {
@@ -151,15 +151,15 @@ const EditProductForm = () => {
                     <select
                         id="category"
                         name="category"
-                        value={newProduct.category}
-                        onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+                        value={newProduct.categoryId}
+                        onChange={(e) => setNewProduct({ ...newProduct, categoryId: e.target.value })}
                         className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                         required
                     >
                         <option value="">Select a category</option>
-                        {categories.map((category) => (
-                            <option key={category} value={category}>
-                                {category}
+                        {categories.length > 0 && categories?.map((category) => (
+                            <option key={category._id} value={category._id}>
+                                {category.name}
                             </option>
                         ))}
                     </select>

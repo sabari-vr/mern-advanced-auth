@@ -64,6 +64,10 @@ const ProductDetailView = () => {
 
     const cartItem = cart.find((e) => e._id === product._id && e.size === selectedSize)
 
+    const products = [{ productId: id, size: selectedSize, quantity: 1 }]
+    const encodedProducts = encodeURIComponent(JSON.stringify(products));
+
+
     if (productByIdQuery?.isLoading || !product) {
         return <LoadingSpinner />
     }
@@ -151,6 +155,7 @@ text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emera
                             <button
                                 className="flex items-center justify-center px-6 py-3 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-300"
                                 disabled={!selectedSize}
+                                onClick={() => navigate(`/order?products=${encodedProducts}`)}
                             >
                                 <CreditCard className="mr-2" size={20} />
                                 Buy Now

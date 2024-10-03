@@ -5,13 +5,13 @@ export const protectRoute = async (req, res, next) => {
   const authHeader = req.header("Authorization");
 
   if (!authHeader) {
-    return res.status(401).json({ msg: "No token, authorization denied" });
+    return res.status(401).json({ message: "No token, authorization denied" });
   }
 
   const token = authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ msg: "Authorization token missing" });
+    return res.status(401).json({ message: "Authorization token missing" });
   }
 
   try {
@@ -22,19 +22,21 @@ export const protectRoute = async (req, res, next) => {
     const tokenExists = activeTokens.some((t) => t.token === token);
 
     if (!tokenExists) {
-      return res.status(401).json({ msg: "Token is not valid" });
+      return res.status(401).json({ message: "Token is not valid" });
     }
 
     if (activeTokens.length > 3) {
       return res
         .status(403)
-        .json({ msg: "You can only log in on three devices simultaneously." });
+        .json({
+          message: "You can only log in on three devices simultaneously.",
+        });
     }
 
     req.user = decoded.user;
     next();
   } catch (err) {
-    res.status(401).json({ msg: "Token is not valid" });
+    res.status(401).json({ message: "Token is not valid" });
   }
 };
 

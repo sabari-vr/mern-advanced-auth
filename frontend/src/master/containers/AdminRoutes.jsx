@@ -6,6 +6,7 @@ import AnalyticsTab from '../components/AnalyticsTab'
 import EditProductForm from '../components/EditProductForm'
 import AdminLayout from '../layout/AdminLayout'
 import CategoryList from '../components/CategoryList'
+import ManageOrders from '../containers/ManageOrders'
 
 const AdminRoutes = () => {
     return (
@@ -16,8 +17,8 @@ const AdminRoutes = () => {
                 <Route path="/products" element={<ProductsList />} />
                 <Route path="/products/:id" element={<EditProductForm />} />
                 <Route path="/category" element={<CategoryList />} />
-
                 <Route path="/analytics" element={<AnalyticsTab />} />
+                <Route path="/orders" element={<ManageOrders />} />
             </Routes>
         </AdminLayout>
     )

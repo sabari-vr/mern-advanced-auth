@@ -27,6 +27,36 @@ export const getCartProducts = async (req, res) => {
   }
 };
 
+export const getCartProductById = async (req, res) => {
+  try {
+    const productItems = req.body;
+
+    const productIds = productItems.map((item) => item.productId);
+
+    const products = await Product.find({ _id: { $in: productIds } });
+
+    const productMap = products.reduce((map, product) => {
+      map[product._id.toString()] = product.toJSON();
+      return map;
+    }, {});
+
+    const cartItems = productItems.map((item) => {
+      const product = productMap[item.productId];
+
+      return {
+        ...product,
+        quantity: item.quantity || 1,
+        size: item.size || null,
+      };
+    });
+
+    res.json(cartItems);
+  } catch (error) {
+    console.log("Error in getCartProducts controller", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export const addToCart = async (req, res) => {
   try {
     const { productId, size } = req.body;

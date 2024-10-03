@@ -1,10 +1,19 @@
 import React from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addToCart, removeAllFromCart, updateQnty } from "..";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { addToCart, getSingleCart, removeAllFromCart, updateQnty } from "..";
 import { successMessage } from "../../utils";
+import { useSearchParams } from "react-router-dom";
 
-export const useCart = () => {
+export const useCart = ({ laod = true }) => {
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const products = JSON.parse(searchParams.get("products"));
+
+  const cartListQuery = useQuery({
+    queryKey: ["GET_SINGLE_CART_CATEGORY"],
+    queryFn: () => getSingleCart(products),
+    enabled: laod,
+  });
 
   const addToCartMutation = useMutation({
     mutationFn: addToCart,
@@ -43,5 +52,6 @@ export const useCart = () => {
     addToCartMutation,
     updateQuantityCartMutation,
     removeAllFromCartMutation,
+    cartListQuery,
   };
 };

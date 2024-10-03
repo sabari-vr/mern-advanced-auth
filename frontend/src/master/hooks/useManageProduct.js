@@ -3,6 +3,7 @@ import {
   createProduct,
   deleteProductFn,
   getAllProducts,
+  getCategories,
   getProductsByID,
   toogleFeaturedProduct,
   updateProduct,
@@ -12,29 +13,20 @@ import { useImmer } from "use-immer";
 import { useNavigate } from "react-router-dom";
 import { successMessage } from "../../utils";
 
-export const useManageProduct = ({ productId = null }) => {
+export const useManageProduct = ({ productId = null, load = false }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const initalProductValue = {
     name: "",
     description: "",
     price: "",
-    category: "",
+    categoryId: "",
     images: [],
     size: false,
     color: "",
     batchId: "",
   };
 
-  const categories = [
-    "jeans",
-    "t-shirts",
-    "shoes",
-    "glasses",
-    "jackets",
-    "suits",
-    "bags",
-  ];
   const sizes = ["S", "M", "L", "XL", "XXL"];
   const [newProduct, setNewProduct] = useImmer(initalProductValue);
   const [previewImages, setPreviewImages] = useImmer([]);
@@ -48,6 +40,14 @@ export const useManageProduct = ({ productId = null }) => {
     enabled: true,
   });
 
+  const catagoryListQuery = useQuery({
+    queryKey: ["GET_CATAGORY_LIST"],
+    queryFn: getCategories,
+    enabled: load,
+  });
+
+  const { data: categories = [] } = catagoryListQuery;
+
   const productByIdQuery = useQuery({
     queryKey: ["GET_PRODUCT_BY_ID"],
     queryFn: () => getProductsByID(productId),
@@ -55,21 +55,24 @@ export const useManageProduct = ({ productId = null }) => {
   });
 
   useEffect(() => {
-    if (productByIdQuery.data) {
-      const { data } = productByIdQuery;
+    if (productByIdQuery.data && !productByIdQuery.isLoading) {
+      const {
+        data: { product: data },
+      } = productByIdQuery;
       if (!!data) {
         setNewProduct((draft) => {
           draft.name = data.name;
           draft.description = data.description;
           draft.price = data.price;
-          draft.category = data.category;
+          draft.categoryId = data.categoryId;
           draft.size = data.size;
           draft.color = data.color;
           draft.batchId = data.batchId;
           return draft;
         });
       }
-      const newImgFormat = data.images.map((element) => ({
+
+      const newImgFormat = data?.images?.map((element) => ({
         url: element,
         file: "",
       }));
