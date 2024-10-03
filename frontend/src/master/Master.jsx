@@ -46,7 +46,7 @@ export const Master = () => {
                             <Route path='/profile' element={<MyProfile />} />
                             <Route path='/order-placed' element={<OrderPlaced />} />
                             <Route path='/order' element={<ReordePage />} />
-                            <Route path='/order' element={<MyWishList />} />
+                            <Route path='/wishlist' element={<MyWishList />} />
                             <Route
                                 exact
                                 element={
