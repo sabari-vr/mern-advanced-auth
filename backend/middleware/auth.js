@@ -26,11 +26,9 @@ export const protectRoute = async (req, res, next) => {
     }
 
     if (activeTokens.length > 3) {
-      return res
-        .status(403)
-        .json({
-          message: "You can only log in on three devices simultaneously.",
-        });
+      return res.status(403).json({
+        message: "You can only log in on three devices simultaneously.",
+      });
     }
 
     req.user = decoded.user;

@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import mongoose from "mongoose";
 import Razorpay from "razorpay";
 import { Payment } from "../models/payment.modal.js";
 import { Order } from "../models/order.modal.js";
@@ -12,9 +13,30 @@ const razorpayInstance = new Razorpay({
 });
 
 export const orderAPI = async (req, res) => {
-  const { amount } = req.body;
+  const { amount, itemsInCart } = req.body;
 
   try {
+    for (const item of itemsInCart) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res
+          .status(404)
+          .json({ message: `Product not found: ${item.name}` });
+      }
+      if (!product.size.hasOwnProperty(item.size)) {
+        return res.status(400).json({
+          message: `Invalid size ${item.size} for product ${item.name}`,
+        });
+      }
+      if (product.size[item.size] < item.quantity) {
+        return res.status(400).json({
+          message: `Not enough stock for product ${item.name} in size ${item.size}`,
+          availableStock: product.size[item.size],
+          requestedQuantity: item.quantity,
+        });
+      }
+    }
+
     const options = {
       amount: Number(amount * 100),
       currency: "INR",
@@ -23,14 +45,14 @@ export const orderAPI = async (req, res) => {
 
     razorpayInstance.orders.create(options, (error, order) => {
       if (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Something Went Wrong!" });
+        console.error("Razorpay order creation error:", error);
+        return res.status(500).json({ message: "Failed to create order" });
       }
       res.status(200).json({ data: order });
     });
   } catch (error) {
+    console.error("Error in orderAPI:", error);
     res.status(500).json({ message: "Internal Server Error!" });
-    console.log(error);
   }
 };
 
@@ -40,7 +62,7 @@ export const veifyOrder = async (req, res) => {
     razorpay_payment_id,
     razorpay_signature,
     itemsInCart,
-    deleveryAddress,
+    deliveryAddress,
     clearCart,
   } = req.body;
 
@@ -74,46 +96,61 @@ export const veifyOrder = async (req, res) => {
           quantity: item.quantity,
           price: item.price,
         })),
-        address: deleveryAddress,
+        address: deliveryAddress,
       });
 
       await order.save();
 
-      // await Promise.all(
-      //   itemsInCart.map(async (item) => {
-      //     console.log("inside loop");
+      const session = await mongoose.startSession();
+      try {
+        await session.withTransaction(async () => {
+          for (const item of itemsInCart) {
+            const product = await Product.findById(item.productId).session(
+              session
+            );
+            if (!product) {
+              throw new Error(`Product not found: ${item.productId}`);
+            }
+            if (
+              !product.size.hasOwnProperty(item.size) ||
+              product.size[item.size] < item.quantity
+            ) {
+              throw new Error(
+                `Insufficient quantity for product ${item.name} in size ${item.size}`
+              );
+            }
+            product.size[item.size] -= item.quantity;
+            await product.save();
+          }
 
-      //     const product = await Product.findById(item.productId);
-      //     if (product && product.size[item.size] >= item.quantity) {
-      //       console.log(
-      //         "reducing quantity",
-      //         (product.size[item.size] -= item.quantity)
-      //       );
-
-      //       product.size[item.size] -= item.quantity;
-      //       await product.save();
-      //     } else {
-      //       return res.status(400).json({
-      //         message: `Insufficient quantity for product ${item?.name} in size ${item?.size}`,
-      //       });
-      //     }
-      //   })
-      // );
-
-      const user = await User.findById(req.user.id);
-      if (clearCart) {
-        user.cartItems = [];
-        await user.save();
+          if (clearCart) {
+            await User.findByIdAndUpdate(req.user.id, {
+              $set: { cartItems: [] },
+            }).session(session);
+          }
+        });
+      } catch (transactionError) {
+        throw transactionError;
+      } finally {
+        await session.endSession();
       }
 
-      await sendOrderSuccessEmail(user.email);
+      await sendOrderSuccessEmail(req.user.email);
 
       res.status(201).json({
         message: "Order placed Successfully",
         orderId: razorpay_order_id,
       });
+    } else {
+      console.log("Invalid signature");
+      res.status(400).json({ message: "Invalid signature" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error!" });
+    console.error("Error in verifyOrder:", error);
+    res.status(500).json({
+      message: "Internal Server Error!",
+      error: error.message,
+      stack: error.stack,
+    });
   }
 };

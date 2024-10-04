@@ -110,8 +110,17 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const productData = JSON.parse(req.body.data);
     const images = JSON.parse(req.body.images);
-    const { name, description, price, categoryId, size, color, batchId } =
-      productData;
+    const {
+      name,
+      description,
+      price,
+      categoryId,
+      size,
+      color,
+      batchId,
+      gender,
+      for: audiance,
+    } = productData;
 
     const imageUrls = [];
 
@@ -143,6 +152,8 @@ export const updateProduct = async (req, res) => {
         size,
         color,
         batchId,
+        gender,
+        for: audiance,
       },
       { new: true }
     );

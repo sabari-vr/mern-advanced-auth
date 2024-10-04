@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToCart, getSingleCart, removeAllFromCart, updateQnty } from "..";
-import { successMessage } from "../../utils";
+import { errorMessage, successMessage } from "../../utils";
 import { useSearchParams } from "react-router-dom";
 
 export const useCart = ({ load = true }) => {

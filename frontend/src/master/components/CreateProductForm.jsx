@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { PlusCircle, Upload, Loader, X } from "lucide-react";
 import { useManageProduct } from '../hooks/useManageProduct';
 import { useEffect } from "react";
+import { errorMessage } from "../../utils";
 
 
 const CreateProductForm = () => {
@@ -22,6 +23,11 @@ const CreateProductForm = () => {
         try {
             const formData = new FormData();
             const { images, ...rest } = newProduct
+            rest.size = Object.fromEntries(
+                Object.entries(newProduct.size).filter(([key, value]) => value !== 0)
+            );
+            if (Object.keys(rest.size).length === 0) return errorMessage('Please fill stock in atleast one size')
+
             formData.append('data', JSON.stringify(rest));
             const base64Images = await Promise.all(
                 previewImages.map(async (image) => {
@@ -151,6 +157,43 @@ const CreateProductForm = () => {
                                 {category.name}
                             </option>
                         ))}
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="category" className="block text-sm font-medium text-gray-300">
+                        Gender
+                    </label>
+                    <select
+                        id="category"
+                        name="gender"
+                        value={newProduct.gender}
+                        onChange={(e) => setNewProduct({ ...newProduct, gender: e.target.value })}
+                        className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        required
+                    >
+                        <option value="">Select a gender</option>
+                        <option value={0}>Male</option>
+                        <option value={1}>Female</option>
+                        <option value={2}>For All</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label htmlFor="category" className="block text-sm font-medium text-gray-300">
+                        Trageted Audiance
+                    </label>
+                    <select
+                        id="category"
+                        name="for"
+                        value={newProduct.for}
+                        onChange={(e) => setNewProduct({ ...newProduct, for: e.target.value })}
+                        className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        required
+                    >
+                        <option value="">Select a Trageted Audiance</option>
+                        <option value={0}>Adults</option>
+                        <option value={1}>Kids</option>
+                        <option value={2}>For All</option>
                     </select>
                 </div>
 

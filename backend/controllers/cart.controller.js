@@ -109,6 +109,18 @@ export const updateQuantity = async (req, res) => {
     const { quantity, size } = req.body;
 
     const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (!product.size.hasOwnProperty(size)) {
+      return res.status(400).json({ message: "Invalid size for this product" });
+    }
 
     const existingItem = user.cartItems.find(
       (item) => item.id === productId && item.size === size
@@ -119,18 +131,23 @@ export const updateQuantity = async (req, res) => {
         user.cartItems = user.cartItems.filter(
           (item) => !(item.id === productId && item.size === size)
         );
-        await user.save();
-        return res.json(user.cartItems);
-      }
+      } else {
+        if (product.size[size] < quantity) {
+          return res.status(400).json({
+            message: "Not enough stock",
+            availableStock: product.size[size],
+          });
+        }
 
-      existingItem.quantity = quantity;
+        existingItem.quantity = quantity;
+      }
       await user.save();
-      res.json(user.cartItems);
+      return res.json(user.cartItems);
     } else {
-      res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "Item not found in cart" });
     }
   } catch (error) {
-    console.log("Error in updateQuantity controller", error.message);
+    console.error("Error in updateQuantity controller", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

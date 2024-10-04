@@ -21,13 +21,44 @@ export const useManageProduct = ({ productId = null, load = false }) => {
     description: "",
     price: "",
     categoryId: "",
+    gender: "",
+    for: "",
     images: [],
     size: false,
     color: "",
     batchId: "",
   };
 
-  const sizes = ["S", "M", "L", "XL", "XXL"];
+  const sizes = [
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "30",
+    "32",
+    "34",
+    "36",
+    "38",
+    "40",
+    "42",
+    "44",
+    "46",
+    "48",
+    "50",
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL",
+    "XXXL",
+    "XXXXL",
+    "FREE",
+  ];
+
   const [newProduct, setNewProduct] = useImmer(initalProductValue);
   const [previewImages, setPreviewImages] = useImmer([]);
   const [sizeStock, setSizeStock] = useImmer(
@@ -68,6 +99,8 @@ export const useManageProduct = ({ productId = null, load = false }) => {
           draft.size = data.size;
           draft.color = data.color;
           draft.batchId = data.batchId;
+          draft.for = data.for;
+          draft.gender = data.gender;
           return draft;
         });
       }

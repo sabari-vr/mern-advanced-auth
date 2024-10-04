@@ -86,6 +86,7 @@ export const verifyEmail = async (req, res) => {
       user: {
         id: user.id,
         role: user.role,
+        email: user.email,
       },
     };
 
@@ -171,6 +172,7 @@ export const login = async (req, res) => {
       user: {
         id: user.id,
         role: user.role,
+        email: user.email,
       },
     };
 
@@ -310,7 +312,7 @@ export const refreshToken = async (req, res) => {
     const payload = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
     const accessToken = jwt.sign(
-      { user: payload.user },
+      { user: payload.user, email: payload.email },
       process.env.JWT_SECRET,
       { expiresIn: process.env.ACCESS_TOKEN_LIFE }
     );

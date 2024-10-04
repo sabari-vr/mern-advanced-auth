@@ -24,19 +24,29 @@ const OrderSummary = ({ data, cartData = false }) => {
 
     const handlePayment = async () => {
         try {
-            if (!selectedAddress) return errorMessage('Please add a delevery address')
-            if (itemsInCart?.length > 0) {
-                const res = await Axios.post(`/payment/order`, { amount: formattedTotal });
-                handlePaymentVerify(res.data.data)
-            }
+            if (!selectedAddress) return errorMessage('Please add a delivery address');
+            if (itemsInCart?.length === 0) return errorMessage('Your cart is empty')
+
+            const res = await Axios.post(`/payment/order`, { amount: formattedTotal, itemsInCart });
+            handlePaymentVerify(res.data.data);
         } catch (error) {
-            console.log(error);
+            if (error.response) {
+                if (error.response.data && error.response.data.message) {
+                    errorMessage(error.response.data.message);
+                } else {
+                    errorMessage(`Error: ${error.response.status} ${error.response.statusText}`);
+                }
+            } else if (error.request) {
+                errorMessage('No response received from server. Please try again.');
+            } else {
+                errorMessage('An unexpected error occurred. Please try again.');
+            }
         }
-    }
+    };
 
     const handlePaymentVerify = async (data) => {
-        const deleveryAddress = addresses.find((e) => e._id === selectedAddress)
-        const { _id, userId, createdAt, updatedAt, ...rest } = deleveryAddress
+        const deliveryAddress = addresses.find((e) => e._id === selectedAddress)
+        const { _id, userId, createdAt, updatedAt, ...rest } = deliveryAddress
         const options = {
             key: razorpayKeyId,
             amount: data.amount,
@@ -51,7 +61,7 @@ const OrderSummary = ({ data, cartData = false }) => {
                         razorpay_payment_id: response.razorpay_payment_id,
                         razorpay_signature: response.razorpay_signature,
                         itemsInCart,
-                        deleveryAddress: rest,
+                        deliveryAddress: rest,
                         clearCart: !cartData
                     })
 
