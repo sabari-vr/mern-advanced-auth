@@ -19,7 +19,6 @@ const ProductDetailView = () => {
     const { WishListState, toggleWishListMutation } = useCartScope();
     const { productReviewByIdQuery } = useReview({ load: false, productId: id })
     const { data: reviewAndRateing, isLoading: isReviewLoading } = productReviewByIdQuery
-    console.log(reviewAndRateing, isReviewLoading);
 
     const { addToCartMutation } = useCart({ load: false })
     const { CartState: { cart } } = useCartScope()

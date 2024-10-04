@@ -15,3 +15,4 @@ export * from "./ManageOrders";
 export * from "./ReordePage";
 export * from "./MyWishList";
 export * from "./RateProduct";
+export * from "./OrderCanceled";

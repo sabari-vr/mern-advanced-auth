@@ -110,6 +110,7 @@ export const veifyOrder = async (req, res) => {
 
       res.status(201).json({
         message: "Order placed Successfully",
+        orderId: razorpay_order_id,
       });
     }
   } catch (error) {

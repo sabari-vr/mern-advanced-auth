@@ -59,16 +59,21 @@ const OrderSummary = ({ data, cartData = false }) => {
                     if (verifyData.message) {
                         toast.success(verifyData.message);
                         queryClient.invalidateQueries({ queryKey: ["GET_CART"] });
-                        navigate('/order-placed');
+                        navigate(`/order-placed?orderId=${verifyData?.orderId}`);
                     }
 
-
                 } catch (error) {
+
                     console.log(error);
                 }
             },
             theme: {
                 color: "#047857"
+            },
+            modal: {
+                ondismiss: () => {
+                    navigate('/order-canceled')
+                }
             }
         };
         if (window.Razorpay) {
