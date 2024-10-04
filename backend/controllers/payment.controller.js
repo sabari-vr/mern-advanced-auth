@@ -4,6 +4,7 @@ import { Payment } from "../models/payment.modal.js";
 import { Order } from "../models/order.modal.js";
 import { User } from "../models/user.model.js";
 import { sendOrderSuccessEmail } from "../email/emails.js";
+import { Product } from "../models/product.model.js";
 
 const razorpayInstance = new Razorpay({
   key_id: process.env.key_id,
@@ -77,6 +78,27 @@ export const veifyOrder = async (req, res) => {
       });
 
       await order.save();
+
+      // await Promise.all(
+      //   itemsInCart.map(async (item) => {
+      //     console.log("inside loop");
+
+      //     const product = await Product.findById(item.productId);
+      //     if (product && product.size[item.size] >= item.quantity) {
+      //       console.log(
+      //         "reducing quantity",
+      //         (product.size[item.size] -= item.quantity)
+      //       );
+
+      //       product.size[item.size] -= item.quantity;
+      //       await product.save();
+      //     } else {
+      //       return res.status(400).json({
+      //         message: `Insufficient quantity for product ${item?.name} in size ${item?.size}`,
+      //       });
+      //     }
+      //   })
+      // );
 
       const user = await User.findById(req.user.id);
       if (clearCart) {

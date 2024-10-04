@@ -9,7 +9,7 @@ import {
 } from "..";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useImmer } from "use-immer";
-import { errorMessage } from "../../utils";
+import { errorMessage, successMessage } from "../../utils";
 
 export const useCategory = ({ categoryId = null, load = false }) => {
   const [editingId, setEditingId] = useState(null);
@@ -39,24 +39,37 @@ export const useCategory = ({ categoryId = null, load = false }) => {
 
   const createMutation = useMutation({
     mutationFn: createCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    onSuccess: (data) => {
+      successMessage(data.message);
       setNewCategoryName("");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (e) => {
+      errorMessage(e.response.data.message);
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: updateCategory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    onSuccess: (data) => {
+      successMessage(data.message);
       setEditingId(null);
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (e) => {
+      errorMessage(e.response.data.message);
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteCategory,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["categories"] }),
+    onSuccess: (data) => {
+      successMessage(data.message);
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (e) => {
+      errorMessage(e.response.data.message);
+    },
   });
 
   const handleEdit = (category) => {

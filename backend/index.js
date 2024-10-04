@@ -14,6 +14,7 @@ import paymentRoutes from "./routes/payment.route.js";
 import orderRoutes from "./routes/order.route.js";
 import userRoutes from "./routes/user.route.js";
 import analticsRoutes from "./routes/analtics.route.js";
+import reviewRoutes from "./routes/review.route.js";
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/analtics", analticsRoutes);
+app.use("/api/review", reviewRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));

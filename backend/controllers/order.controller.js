@@ -29,6 +29,9 @@ export const getAllOrders = async (req, res) => {
         path: "paymentId",
         select: "razorpay_order_id razorpay_payment_id date",
         model: Payment,
+      })
+      .sort({
+        createdAt: -1,
       });
 
     res.json(orders);
@@ -43,7 +46,9 @@ export const getAllOrders = async (req, res) => {
 
 export const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user.id });
+    const orders = await Order.find({ userId: req.user.id }).sort({
+      createdAt: -1,
+    });
     res.json(orders);
   } catch (error) {
     console.error("Error retrieving orders:", error);

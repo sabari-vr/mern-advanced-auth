@@ -4,7 +4,7 @@ import { addToCart, getSingleCart, removeAllFromCart, updateQnty } from "..";
 import { successMessage } from "../../utils";
 import { useSearchParams } from "react-router-dom";
 
-export const useCart = ({ laod = true }) => {
+export const useCart = ({ load = true }) => {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const products = JSON.parse(searchParams.get("products"));
@@ -12,7 +12,7 @@ export const useCart = ({ laod = true }) => {
   const cartListQuery = useQuery({
     queryKey: ["GET_SINGLE_CART_CATEGORY"],
     queryFn: () => getSingleCart(products),
-    enabled: laod,
+    enabled: load,
   });
 
   const addToCartMutation = useMutation({

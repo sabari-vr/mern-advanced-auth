@@ -2,11 +2,13 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import { useCategory } from "../hooks/useCategory";
+import { useCartScope } from "..";
 
 const CategoryPage = () => {
     const { categoryId } = useParams();
     const [searchParams] = useSearchParams()
     const catagory = searchParams.get('category')
+    const { WishListState, toggleWishListMutation } = useCartScope();
     const { productListQuery } = useCategory({ categoryId, load: false });
     const { data, isFetching } = !!productListQuery && productListQuery
     const { products } = !!data && !isFetching && data
@@ -36,7 +38,7 @@ const CategoryPage = () => {
                     )}
 
                     {products?.map((product) => (
-                        <ProductCard key={product._id + 'category'} product={product} />
+                        <ProductCard key={product._id + 'category'} product={product} wishListMutation={toggleWishListMutation} wishListState={WishListState} />
                     ))}
                 </motion.div>
             </div>

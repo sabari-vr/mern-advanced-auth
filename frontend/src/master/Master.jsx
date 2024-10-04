@@ -5,7 +5,7 @@ import LoginPage from './containers/LoginPage';
 import SignUpPage from './containers/SignUpPage';
 import EmailVerificationPage from './containers/EmailVerificationPage';
 import { AppScope, useAppScope } from './context/AppScope';
-import { MyOrders, MyProfile, MyWishList, OrderPlaced, ProtectedRoute } from './containers';
+import { MyOrders, MyProfile, MyWishList, OrderPlaced, ProtectedRoute, RateProduct } from './containers';
 import ForgotPasswordPage from './containers/ForgotPasswordPage';
 import ResetPasswordPage from './containers/ResetPasswordPage';
 import HomePage from './containers/HomePage';
@@ -47,6 +47,7 @@ export const Master = () => {
                             <Route path='/order-placed' element={<OrderPlaced />} />
                             <Route path='/order' element={<ReordePage />} />
                             <Route path='/wishlist' element={<MyWishList />} />
+                            <Route path='/rate' element={<RateProduct />} />
                             <Route
                                 exact
                                 element={

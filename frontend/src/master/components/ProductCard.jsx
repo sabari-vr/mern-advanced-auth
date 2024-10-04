@@ -1,10 +1,11 @@
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, wishListMutation, wishListState }) => {
+    const isWishlisted = wishListState?.some((e) => e.product._id == product._id)
 
     const handleWishlistClick = () => {
-        console.log("Added to wishlist:", product._id);
+        wishListMutation.mutate(product._id)
     };
 
     return (
@@ -28,7 +29,11 @@ const ProductCard = ({ product }) => {
                 className='absolute bottom-12 right-3 z-100 text-emerald-400 hover:text-emerald-600 transition-colors'
                 onClick={handleWishlistClick}
             >
-                <Heart size={24} />
+                <Heart
+                    size={24}
+                    fill={isWishlisted ? "red" : "none"}
+                    color={isWishlisted ? "red" : "currentColor"}
+                />
             </button>
         </div>
     );

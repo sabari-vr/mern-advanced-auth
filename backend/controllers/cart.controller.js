@@ -27,7 +27,7 @@ export const getCartProducts = async (req, res) => {
   }
 };
 
-export const getCartProductById = async (req, res) => {
+export const getCartProductsById = async (req, res) => {
   try {
     const productItems = req.body;
 

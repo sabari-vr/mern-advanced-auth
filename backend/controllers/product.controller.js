@@ -1,5 +1,6 @@
 import cloudinary from "../config/cloudinary.js";
 import { Category } from "../models/category.model.js";
+import { Order } from "../models/order.modal.js";
 import { Product } from "../models/product.model.js";
 import DatauriParser from "datauri/parser.js";
 

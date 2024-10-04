@@ -1,17 +1,21 @@
 import React, { useContext, createContext, useEffect } from "react";
 import { useImmer } from "use-immer";
-import { useQuery } from "@tanstack/react-query";
-import { getCart, useAppScope } from "..";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCart, getWishlist, toggleWishlist, useAppScope } from "..";
+import { errorMessage, successMessage } from "../../utils";
 
 const CartContext = createContext();
 
 export const CartScope = (props) => {
+  const queryClient = useQueryClient();
   const [CartState, setCartState] = useImmer({
     cart: [],
     coupon: null,
     total: 0,
     subtotal: 0
   });
+
+  const [WishListState, setWishListState] = useImmer([]);
 
   const {
     AppState: { accessToken },
@@ -23,7 +27,14 @@ export const CartScope = (props) => {
     enabled: !!accessToken,
   });
 
+  const wishListQuery = useQuery({
+    queryKey: ["GET_WISHLIST"],
+    queryFn: getWishlist,
+    enabled: !!accessToken,
+  });
+
   const { data, isLoading } = !!cartListQuery && cartListQuery
+  const { data: wishListData, isLoading: isWishListLoading } = !!wishListQuery && wishListQuery
 
   useEffect(() => {
     if (data) {
@@ -43,12 +54,33 @@ export const CartScope = (props) => {
     }
   }, [data])
 
+  useEffect(() => {
+    if (!!wishListData && !isWishListLoading) {
+      setWishListState(wishListData)
+    }
+  }, [wishListData])
+
+  const toggleWishListMutation = useMutation({
+    mutationFn: toggleWishlist,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["GET_WISHLIST"] });
+      successMessage(data.message);
+    },
+    onError: (e) => {
+      errorMessage(e.response.data.message);
+    },
+  });
+
   return (
     <CartContext.Provider
       value={{
         CartState,
         setCartState,
         isLoading,
+        WishListState,
+        setWishListState,
+        isWishListLoading,
+        toggleWishListMutation
       }}
     >
       {props.children}

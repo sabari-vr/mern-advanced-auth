@@ -45,7 +45,9 @@ export const MyOrders = () => {
                                 }
                             )
                         })
+
                         const encodedProducts = encodeURIComponent(JSON.stringify(products));
+
                         return (
                             <div key={order._id + 'my_orders'} className="mb-4 border rounded-lg">
                                 {/* Accordion Header */}
@@ -113,7 +115,7 @@ export const MyOrders = () => {
                                                 </button>
                                             )}
                                             <button
-                                                onClick={() => handleOrderAgain(order._id)}
+                                                onClick={() => navigate(`/rate?orderId=${order._id}`)}
                                                 className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300"
                                             >
                                                 Rate Order

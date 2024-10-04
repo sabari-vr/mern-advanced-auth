@@ -1,5 +1,6 @@
 import cloudinary from "../config/cloudinary.js";
 import { Category } from "../models/category.model.js";
+import { Product } from "../models/product.model.js";
 
 export const createCategory = async (req, res) => {
   const data = JSON.parse(req.body.data);
@@ -99,6 +100,13 @@ export const deleteCategory = async (req, res) => {
     const category = await Category.findById(id);
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
+    }
+
+    const products = await Product.find({ categoryId: id });
+    if (products.length > 0) {
+      return res.status(400).json({
+        message: "Cannot delete category because it contains products.",
+      });
     }
 
     const imagePublicId = category.image.split("/").pop().split(".")[0];

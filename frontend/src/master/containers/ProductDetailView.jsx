@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, ShoppingCart, CreditCard, Plus, Minus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ShoppingCart, CreditCard, Plus, Minus, Heart } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCart } from '../hooks';
+import { useCart, useReview } from '../hooks';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useQuery } from '@tanstack/react-query';
 import { getProductsByID } from '../api';
@@ -16,6 +16,10 @@ const ProductDetailView = () => {
     const [related, setRelated] = useState([]);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const { WishListState, toggleWishListMutation } = useCartScope();
+    const { productReviewByIdQuery } = useReview({ load: false, productId: id })
+    const { data: reviewAndRateing, isLoading: isReviewLoading } = productReviewByIdQuery
+    console.log(reviewAndRateing, isReviewLoading);
 
     const { addToCartMutation } = useCart({ load: false })
     const { CartState: { cart } } = useCartScope()
@@ -67,6 +71,12 @@ const ProductDetailView = () => {
     const products = [{ productId: id, size: selectedSize, quantity: 1 }]
     const encodedProducts = encodeURIComponent(JSON.stringify(products));
 
+    const isWishlisted = WishListState?.some((e) => e.product._id == product._id)
+
+    const handleWishlistClick = () => {
+        toggleWishListMutation.mutate(id)
+    };
+
 
     if (productByIdQuery?.isLoading || !product) {
         return <LoadingSpinner />
@@ -77,7 +87,7 @@ const ProductDetailView = () => {
         <div className="container mx-auto px-4 py-8">
             <div className="flex flex-col md:flex-row">
                 {/* Image Carousel */}
-                <div className="md:w-1/2 relative">
+                <div className="md:w-1/2 relative bg-white/5 shadow-lg backdrop-blur-md border border-white/20 rounded-lg p-3">
                     <div
                         className="relative overflow-hidden"
                     >
@@ -85,7 +95,7 @@ const ProductDetailView = () => {
                             src={product.images[currentImageIndex]}
                             alt={product.name}
                             className={`w-full h-auto  transition-transform duration-300`}
-                            style={{ height: "500px", objectFit: "contain" }}
+                            style={{ height: "450px", objectFit: "contain" }}
                         />
                         <button
                             onClick={() => handleImageChange('prev')}
@@ -99,6 +109,18 @@ const ProductDetailView = () => {
                         >
                             <ChevronRight size={24} color='black' />
                         </button>
+                        <div className='absolute top-4 right-3 z-100 flex justify-center align-center bg-gray-50 rounded-full w-9 h-9'>
+                            <button
+                                className=' text-emerald-400 hover:text-emerald-600 transition-colors'
+                                onClick={handleWishlistClick}
+                            >
+                                <Heart
+                                    size={24}
+                                    fill={isWishlisted ? "red" : "none"}
+                                    color={isWishlisted ? "red" : "currentColor"}
+                                />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -108,20 +130,41 @@ const ProductDetailView = () => {
                         <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
                         <p className="text-2xl font-semibold mb-4">₹ {product.price.toFixed(2)}</p>
                         <p className="text-xl font-semibold mb-4">{product.color}</p>
+
+                        {/* Star Rating (out of 5) */}
+                        {reviewAndRateing && reviewAndRateing.length > 0 && (
+                            <div className="flex items-center mb-4">
+                                <span className="text-lg font-semibold">
+                                    {reviewAndRateing && reviewAndRateing.length > 0
+                                        ? (
+                                            reviewAndRateing.reduce((sum, review) => sum + review.rating, 0) / reviewAndRateing.length
+                                        ).toFixed(1)
+                                        : 'No ratings yet'}
+                                </span>
+                                {reviewAndRateing && reviewAndRateing.length > 0 && (
+                                    <div className="ml-2 flex items-center">
+                                        <span className="text-yellow-500">★</span>
+                                        <span className="text-gray-500 text-sm">({reviewAndRateing.length} reviews)</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div>
-                        {/* Size Selection */}
-                        <div className="mb-6">
-                            <h2 className="text-lg font-semibold mb-2">Colours:</h2>
-                            <div className="flex space-x-2">
-                                {related.length > 0 && related.map((e) => {
-                                    return (
-                                        <div onClick={() => navigate(`/product/${e.id}`)}><img className='h-[80px]' src={e.image} /><label>{e.label}</label></div>
-                                    )
-                                })}
+                        {/* Colours Selection */}
+                        {related.length > 0 && (
+                            <div className="mb-6">
+                                <h2 className="text-lg font-semibold mb-2">Colours:</h2>
+                                <div className="flex space-x-2">
+                                    {related?.map((e) => {
+                                        return (
+                                            <div onClick={() => navigate(`/product/${e.id}`)}><img className='h-[80px]' src={e.image} /><label>{e.label}</label></div>
+                                        )
+                                    })}
+                                </div>
                             </div>
-                        </div>
+                        )}
                         {/* Size Selection */}
                         <div className="mb-6">
                             <h2 className="text-lg font-semibold mb-2">Select Size:</h2>
@@ -166,7 +209,30 @@ text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emera
             </div>
             <div className='pt-5'>
                 <pre className="mb-4" style={{ maxWidth: "100%", textWrap: "wrap" }}>{product.description}</pre>
+            </div>
+            {/* Ratings and Reviews Section */}
+            <div className="pt-5">
+                <h2 className="text-2xl font-semibold mb-4">Reviews and Ratings</h2>
 
+                {isReviewLoading ? (
+                    <LoadingSpinner />
+                ) : (
+                    <div>
+                        {reviewAndRateing?.length > 0 ? (
+                            reviewAndRateing.map((review) => (
+                                <div key={review._id} className="mb-4">
+                                    <div className="flex items-center">
+                                        <span className="text-xl font-semibold">{review.rating}<span className="text-yellow-500">★</span></span>
+                                    </div>
+                                    <p className="text-lg">{review.review}</p>
+                                    <small className="text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</small>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No reviews yet for this product.</p>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );
