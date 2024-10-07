@@ -3,11 +3,13 @@ import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 
+import job from "./cron.js";
 import { connectDB } from "./db/connectDB.js";
 
 import authRoutes from "./routes/auth.route.js";
 
 dotenv.config();
+job.start();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
