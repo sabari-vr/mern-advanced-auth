@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
 
-import job from "./cron.js";
 import { connectDB } from "./db/connectDB.js";
+import job from "./cron.js";
 
 import authRoutes from "./routes/auth.route.js";
 

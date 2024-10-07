@@ -1,7 +1,7 @@
 import cron from "cron";
 import https from "https";
 
-const URL = "https://mern-expence-tracker-gql.onrender.com/";
+const URL = "https://mern-advanced-auth-wowh.onrender.com/";
 
 const job = new cron.CronJob("*/10 * * * *", function () {
   https
