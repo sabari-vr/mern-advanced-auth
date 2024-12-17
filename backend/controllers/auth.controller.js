@@ -8,7 +8,7 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "../email/emails.js";
-import { User, Token } from "../models/user.model.js";
+import { User, Token, Balance } from "../models/user.model.js";
 
 export const signup = async (req, res) => {
   const { email, password, name } = req.body;
@@ -40,6 +40,10 @@ export const signup = async (req, res) => {
     });
 
     await user.save();
+
+    const balance = new Balance({ userId: user._id, balance: 100000 });
+
+    await balance.save();
 
     await sendVerificationEmail(user.email, verificationToken);
 

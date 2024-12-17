@@ -40,7 +40,7 @@ export const Master = () => {
                             path={"/*"}
                         />
                     </Routes>
-                    <div className='absolute bottom-5 text-white'>Made with 💖 by <a target='blank' href='https://sabari-vr.github.io/my-portfolio' className='font-bold'>Sabari V R</a></div>
+                    {/* <div className='absolute bottom-5 text-white'>Made with 💖 by <a target='blank' href='https://sabari-vr.github.io/my-portfolio' className='font-bold'>Sabari V R</a></div> */}
                 </div>
             </AppScope>
         </QueryClientProvider>

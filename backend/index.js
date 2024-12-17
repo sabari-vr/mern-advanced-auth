@@ -7,6 +7,7 @@ import { connectDB } from "./db/connectDB.js";
 import job from "./cron.js";
 
 import authRoutes from "./routes/auth.route.js";
+import stockRoutes from "./routes/stock.route.js";
 
 dotenv.config();
 job.start();
@@ -20,6 +21,7 @@ app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json()); // allows us to parse incoming requests:req.body
 
 app.use("/api/auth", authRoutes);
+app.use("/api/stock", stockRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));

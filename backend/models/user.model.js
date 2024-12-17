@@ -42,5 +42,60 @@ const tokenSchema = new Schema(
   { timestamps: true }
 );
 
+const balanceSchema = new Schema(
+  {
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    balance: {
+      type: Number,
+      required: true,
+      default: 100000,
+      min: 0,
+    },
+  },
+  { timestamps: true }
+);
+
+const tradeSchema = new mongoose.Schema(
+  {
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+    sellDate: {
+      type: Date,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    stock: {
+      type: String,
+      required: true,
+    },
+    purchasePrice: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    transactionType: {
+      type: String,
+      enum: ["Buy", "Sell"],
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["Holding", "Complete"],
+      required: true,
+    },
+    profitOrLoss: {
+      type: Number,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 export const User = mongoose.model("User", userSchema);
 export const Token = mongoose.model("Token", tokenSchema);
+export const Balance = mongoose.model("Balance", balanceSchema);
+export const Trade = mongoose.model("Trade", tradeSchema);
