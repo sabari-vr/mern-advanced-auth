@@ -53,9 +53,9 @@ export const useStock = ({ load = false }) => {
   const exitMutation = useMutation({
     mutationFn: exitTrade,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["MY-BALANCE"]);
-      queryClient.invalidateQueries(["MY-HOLDING"]);
       queryClient.invalidateQueries(["MY-COMPLETE"]);
+      queryClient.invalidateQueries(["MY-HOLDING"]);
+      queryClient.invalidateQueries(["MY-BALANCE"]);
       successMessage("trade exited successfuly");
     },
     onError: (e) => {

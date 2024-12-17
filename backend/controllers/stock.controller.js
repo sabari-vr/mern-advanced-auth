@@ -195,13 +195,15 @@ export const exitTrade = async (req, res) => {
 
     const profitOrLoss = currentPrice - trade.purchasePrice;
     const totalProfitOrLoss = profitOrLoss * trade.quantity;
+    const originalSpentPrice = trade.purchasePrice * trade.quantity;
     trade.status = "Complete";
     trade.profitOrLoss = totalProfitOrLoss;
     trade.sellDate = new Date();
 
     await trade.save();
 
-    const newBalanceAmount = userBalance.balance + totalProfitOrLoss;
+    const newBalanceAmount =
+      userBalance.balance + totalProfitOrLoss + originalSpentPrice;
     const newBalance = new Balance({
       userId: req.user.id,
       balance: newBalanceAmount,
