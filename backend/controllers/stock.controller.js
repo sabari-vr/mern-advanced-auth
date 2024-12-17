@@ -58,12 +58,13 @@ export const getAllStockPrice = async (req, res) => {
             `https://query1.finance.yahoo.com/v8/finance/chart/${stock.symbol}`
           );
           const price = response.data.chart.result[0].meta.regularMarketPrice;
-
+          const previousClose =
+            response.data.chart.result[0].meta.previousClose;
           return {
             name: stock.name,
             symbol: stock.symbol,
             price,
-            data: response.data.chart.result[0],
+            previousClose,
           };
         } catch (error) {
           console.error(`Failed to fetch price for ${stock.symbol}:`, error);

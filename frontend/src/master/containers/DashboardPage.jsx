@@ -13,7 +13,7 @@ const DashboardPage = () => {
 			animate={{ opacity: 1, scale: 1 }}
 			exit={{ opacity: 0, scale: 0.9 }}
 			transition={{ duration: 0.5 }}
-			className='max-w-3xl w-full mx-auto mt-10 p-8 bg-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-xl shadow-2xl border border-gray-800'
+			className='max-w-4xl w-full mx-auto mt-10 p-8 bg-gray-900 bg-opacity-80 backdrop-filter backdrop-blur-lg rounded-xl shadow-2xl border border-gray-800'
 		>
 			<h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-600 text-transparent bg-clip-text'>
 				Dashboard
@@ -48,7 +48,7 @@ const DashboardPage = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ delay: 0.4 }}
 				>
-					<h3 className='text-xl font-semibold text-green-400 mb-3'>History</h3>
+					<h3 className='text-xl font-semibold text-green-400 mb-3'>Trading History</h3>
 					{getMyComplete?.length > 0 ?
 						<ComplteTable stocks={getMyComplete} />
 						: "Nothing to show"}

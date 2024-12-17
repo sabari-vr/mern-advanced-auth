@@ -28,6 +28,8 @@ export const StockTable = ({ stocks, balance, buyMutation }) => {
                     <tr className="bg-gray-200">
                         <th className="py-2 px-4 text-left text-sm font-semibold text-gray-700">Name</th>
                         <th className="py-2 px-4 text-left text-sm font-semibold text-gray-700">Symbol</th>
+                        <th className="py-2 px-4 text-left text-sm font-semibold text-gray-700">Diffrence</th>
+                        <th className="py-2 px-4 text-left text-sm font-semibold text-gray-700"></th>
                         <th className="py-2 px-4 text-left text-sm font-semibold text-gray-700">Price</th>
                         <th className="py-2 px-4 text-left text-sm font-semibold text-gray-700">Actions</th>
                     </tr>
@@ -47,6 +49,24 @@ export const StockTable = ({ stocks, balance, buyMutation }) => {
                                 {stock.symbol}
                             </td>
                             <td className="py-3 px-4 text-sm text-gray-600">
+                                ₹{(stock.price - stock.previousClose).toFixed(2)}
+                            </td>
+                            <td className="py-3 px-4 text-sm text-gray-600">
+                                <span
+                                    className={
+                                        stock.price > stock.previousClose
+                                            ? "text-green-600"
+                                            : "text-red-600"
+                                    }
+                                >
+                                    {stock.price > stock.previousClose ? "↑" : "↓"}
+                                    {Math.abs(((stock.price - stock.previousClose) / stock.previousClose) * 100).toFixed(2)}%
+                                </span>
+                            </td>
+                            <td
+                                className={`py-3 px-4 text-sm ${stock.price > stock.previousClose ? "text-green-600" : "text-red-600"
+                                    }`}
+                            >
                                 ₹{stock.price.toFixed(2)}
                             </td>
                             <td className="py-3 px-4 text-sm text-gray-600">
